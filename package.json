@@ -1,0 +1,8 @@
+{
+  "name": "medialibrary-coursework",
+  "version": "1.0.0",
+  "description": "Medialibrary webpage made for university coursework",
+  "main": "index.js",
+  "author": "Egor Pershin <hickar@icloud.com>",
+  "license": "MIT"
+}
