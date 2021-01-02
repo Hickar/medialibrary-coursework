@@ -1,0 +1,6 @@
+.test__paragraph {
+    background-color: black;
+    color: white;
+    font-size: 48px;
+    text-transform: capitalize;
+}
