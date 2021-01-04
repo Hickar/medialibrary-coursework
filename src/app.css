@@ -1,6 +1,188 @@
-.test__paragraph {
-    background-color: black;
-    color: white;
-    font-size: 48px;
-    text-transform: capitalize;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+    /*colors*/
+    --text-primary-light: #E4E4E4;
+    --text-secondary-light: #B2B2B2;
+    --text-label-light: #979797;
+    --text-button-light: #ffffff;
+
+    --text-primary-dark: #000;
+    --text-form: #a4a4a4;
+
+    --background-light: #f0f0f0;
+    --background-dark: #282828;
+    --background-panel: white;
+
+    --border-light: #cdcdcd;
+    --border-dark: #535353;
+
+    --accent-fade: #279aff;
+    --accent-primary: #0083f6;
+    --accent-focus: #015ecf;
+
+    --error-primary: #B00035;
+
+    /*sizing*/
+    --width-1: 8.333%;
+    --width-2: 16.666%;
+    --width-3: 25%;
+    --width-4: 33.333%;
+    --width-5: 41.666%;
+    --width-6: 50%;
+    --width-7: 58.333%;
+    --width-8: 66.666%;
+    --width-9: 75%;
+    --width-10: 83.333%;
+    --width-11: 91.466%;
+    --width-12: 100%;
+
+    /*fonts*/
+    --default-fonts: -apple-system, BlinkMacSystemFont, "Inter", Segoe UI, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    --h1-size: 3.5rem;
+    --h2-size: 2.5rem;
+    --h3-size: 2rem;
+    --paragraph-size: 1.25rem;
+    --paragraph-small-size: 1rem;
+    --button-large-size: 1.125rem;
+    --button-medium-size: 1rem;
+    --button-small-size: .875rem;
+    --footer-heading-size: .875rem;
+    --footer-item-size: .1rem;
+    --navigation-brand-size: 1rem;
+    --navigation-item-size: 1.125rem;
+}
+
+html {
+    font-family: var(--default-fonts);
+    font-size: 16px;
+    line-height: 1.2;
+}
+
+body {
+    font: inherit;
+    padding: 0;
+    margin: 0;
+    background-color: var(--background-light);
+    z-index: 0;
+    /*transition: .2s padding-right ease;*/
+}
+
+h1, h2, h3, h4, h5, h6 {
+    line-height: inherit;
+    color: inherit;
+    margin: 0 0 1rem 0;
+    text-wrap: none;
+}
+
+h1 {
+    font-size: var(--h1-size);
+    font-weight: 500;
+    margin: 0 0 1rem 0;
+}
+
+h2 {
+    font-size: var(--h2-size);
+    font-weight: 500;
+}
+
+h3 {
+    font-size: var(--h3-size);
+    font-weight: 500;
+}
+
+p {
+    font-size: var(--paragraph-size);
+    line-height: 1.5;
+    color: inherit;
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+button {
+    cursor: pointer;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.noscroll {
+    overflow: hidden;
+    padding-right: 15px;
+}
+
+.wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.text_primary_light {
+    color: var(--text-primary-light);
+}
+
+.text_secondary_light {
+    color: var(--text-secondary-light)
+}
+
+.text_accent {
+    color: var(--accent-primary);
+}
+
+.text_nowrap {
+    white-space: nowrap;
+}
+
+@media screen and (max-width: 1200px) {
+    :root {
+        --h1-size: 3rem;
+        --h2-size: 2rem;
+        --h3-size: 1.5rem;
+        --paragraph-size: 1rem;
+        --paragraph-small-size: .875rem;
+        --button-large-size: 1rem;
+        --navigation-brand-size: .875rem;
+        --navigation-item-size: 1rem;
+    }
+}
+
+@media screen and (max-width: 996px) {
+    :root {
+        --h1-size: 2.5rem;
+        --h2-size: 2rem;
+        --h3-size: 1.5rem;
+        --paragraph-size: 1rem;
+        --paragraph-small-size: 1rem;
+        --button-large-size: .875rem;
+        --navigation-brand-size: .875rem;
+        --navigation-item-size: 1rem;
+    }
+}
+
+@media screen and (max-width: 570px) {
+    :root {
+        --h1-size: 2rem;
+        --h2-size: 1.75rem;
+        --h3-size: 1.5rem;
+        --paragraph-size: 1rem;
+        --paragraph-small-size: 1rem;
+        --button-large-size: .875rem;
+        --navigation-brand-size: .875rem;
+        --navigation-item-size: 1rem;
+    }
+
+    h1 {
+        margin: 0 0 .5rem 0;
+    }
+
+    .noscroll {
+        padding-right: 0;
+    }
 }
