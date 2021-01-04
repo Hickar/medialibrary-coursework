@@ -1,0 +1,9 @@
+#RewriteEngine On
+#RewriteCond %{HTTPS} on
+#RewriteRule (.*) http://%{HTTP_HOST}%{REQUEST_URI}
+#
+#<FilesMatch "\.(pl|php|cgi|spl|scgi|fcgi)$">
+#    Header unset Cache-Control
+#</FilesMatch>
+Redirect /login /
+Redirect /dashboard /

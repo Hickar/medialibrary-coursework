@@ -1,4 +1,5 @@
 <?php
+
 ?>
 <!doctype html>
 <html lang="ru">
@@ -11,7 +12,6 @@
     </head>
     <body>
         <div id="app"></div>
-        TEST
-        <script type="text/javascript" src="/dist/main.bundle.js"></script>
+        <script type="text/javascript" src="./dist/main.bundle.js"></script>
     </body>
 </html>

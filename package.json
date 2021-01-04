@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack --mode development",
+    "start": "webpack serve --hot",
     "build": "webpack --mode production"
   },
   "author": "Egor Pershin <hickar@icloud.com>",
@@ -20,6 +21,8 @@
     "css-loader": "^5.0.1",
     "mini-css-extract-plugin": "^1.3.3",
     "postcss-loader": "^4.1.0",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
     "style-loader": "^2.0.0",
     "webpack": "^5.11.1",
     "webpack-cli": "^4.3.1",

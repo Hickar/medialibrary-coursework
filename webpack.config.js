@@ -10,6 +10,18 @@ let config = {
 		path: path.resolve(__dirname, "dist"),
 		filename: "[name].bundle.js"
 	},
+	devServer: {
+		// publicPath: "http://localhost:8080/",
+		contentBase: path.join(__dirname),
+		compress: true,
+		// proxy: [
+		// 	{
+		// 		path: /./,
+		// 		target: "http://medialibrary.local"
+		// 	}
+		// ],
+		writeToDisk: true
+	},
 	resolve: {
 		extensions: [".js", ".jsx", ".json", ".ts", ".tsx"]
 	},
@@ -18,7 +30,7 @@ let config = {
 			{
 				test: /\.(js|jsx|tsx|ts)$/,
 				exclude: path.resolve(__dirname, "node_modules"),
-				use: {
+				use: [{
 					loader: "babel-loader",
 					options: {
 						presets: [
@@ -29,7 +41,9 @@ let config = {
 							"@babel/plugin-syntax-dynamic-import"
 						]
 					}
-				}
+				}, {
+					loader: "react-hot-loader/webpack"
+				}]
 			},
 			{
 				test: /.(png|woff(2)?|eot|ttf|svg|gif)(\?[a-z0-9=\.]+)?$/,
