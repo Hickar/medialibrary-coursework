@@ -8,10 +8,11 @@ let config = {
 	},
 	output: {
 		path: path.resolve(__dirname, "dist"),
-		filename: "[name].bundle.js"
+		filename: "[name].bundle.js",
+		publicPath: ""
 	},
 	devServer: {
-		// publicPath: "http://localhost:8080/",
+		publicPath: "/",
 		contentBase: path.join(__dirname),
 		compress: true,
 		// proxy: [
@@ -58,7 +59,16 @@ let config = {
 			},
 			{
 				test: /\.css$/,
-				use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"]
+				use: [
+					MiniCssExtractPlugin.loader,
+					{
+						loader: "css-loader",
+						options: {
+							importLoaders: 1,
+							modules: true
+						}
+					},
+					"postcss-loader"]
 			}
 		]
 	},

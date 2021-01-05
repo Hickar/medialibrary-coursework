@@ -2,12 +2,14 @@ import React from "react";
 import styles from "./LoginPage.module.css";
 import Section from "./Section";
 import {useState} from "react";
+import background_image from "../assets/login_background.svg";
 
 export function LoginPage(props) {
 	const [isRegistrationActive, setIsRegistrationActive] = useState(false);
 
 	return (
 		<Section>
+			<img className={styles.login_background} src={background_image} alt={"Background image"}/>
 			<div className={styles.login_card}>
 				<h1 className={styles.login_hero}>Hickarium</h1>
 				<p className={styles.login_description}>
