@@ -1,31 +1,36 @@
 import "./app.css"
-import React from "react";
+import React, {useState} from "react";
 import ReactDOM from "react-dom"
-import {BrowserRouter as Router, Route, Redirect, Switch, Link} from "react-router-dom";
+import {BrowserRouter as Router, Route, Redirect} from "react-router-dom";
 import {LoginPage} from "./Components/LoginPage";
+import {Dashboard} from "./Components/Dashboard";
+import {NotificationContext} from "./Components/NotificationContext"
+import {Notification} from "./Components/Notification";
 
 function App() {
-    return (
-        <>
-            <Router>
-                <Switch>
-                    <Route path={"/"}>
-                        <Redirect to={"/login"}/>
-                        <LoginPage/>
-                    </Route>
-                    <Route path={"/dashboard"}>
-                        <p className={"test__paragraph"}>Dashboard</p>
-                        {/*<Dashboard/>*/}
-                    </Route>
-                    <Route path={"/login"}>
+    const [notificationStatus, setNotificationStatus] = useState({type: "", text: "", active: false});
 
-                    </Route>
-                </Switch>
-            </Router>
-        </>
+    return (
+        <NotificationContext.Provider value={setNotificationStatus}>
+            <Notification status={notificationStatus}/>
+            <Route path={"/"}>
+                <Redirect to={"/login"}/>
+            </Route>
+            <Route path={"/dashboard"}>
+                <Dashboard/>
+            </Route>
+            <Route path={"/login"}>
+                <LoginPage/>
+            </Route>
+        </NotificationContext.Provider>
     )
 }
 
 if (typeof window !== undefined) {
-    ReactDOM.render(<App/>, document.getElementById("app"))
+    ReactDOM.render(
+        <Router>
+            <App/>
+        </Router>,
+        document.getElementById("app")
+    )
 }

@@ -1,35 +1,60 @@
-import React from "react";
+import React, {useState, useContext} from "react";
 import styles from "./LoginForm.module.css";
-import {useState} from "react";
+import {useHistory} from "react-router";
+import {NotificationContext} from "./NotificationContext";
 
 export function LoginForm() {
     const [isRegistrationActive, setIsRegistrationActive] = useState(false);
-    const [userData, setUserData] = useState({userName: "", userPassword: "", userPasswordCheck: ""});
+    const [userData, setUserData] = useState({name: "", password: "", password_check: ""});
+    const history = useHistory();
+    const setNotification = useContext(NotificationContext);
 
     async function handleSignUpSubmit(e) {
         e.preventDefault();
-        if (userData.userPassword !== userData.userPasswordCheck) return;
 
-        const response = await fetch("http://medialibrary.local/actions.php?register", {
+        if (userData.password !== userData.password_check) {
+            setNotification({type: "error", text: "Пароли должны совпадать", active: true});
+            return;
+        }
+
+        const response = await fetch("http://medialibrary.local/modules/actions.php?register", {
             method: "POST",
             body: JSON.stringify(userData),
             headers: {
                 'Content-Type': 'application/json'
             }
         });
-        const val = response.json();
-        console.log("Response: " + await Promise.resolve(val));
+
+        const data = await response.json();
+
+        if (data.err) {
+            setNotification({type: "error", text: data.message, active: true});
+            return;
+        }
+
+        setNotification({type: "message", text: data.message, active: true});
+        setIsRegistrationActive(false);
     }
 
-    function handleSignInSubmit(e) {
+    async function handleSignInSubmit(e) {
         e.preventDefault();
-        return fetch("http://medialibrary.local/actions.php?login", {
+
+        const response = await fetch("http://medialibrary.local/modules/actions.php?login", {
             method: "POST",
             body: JSON.stringify(userData),
             headers: {
                 'Content-Type': 'application/json'
             }
-        })
+        });
+
+        const data = await response.json();
+
+        if (data.err) {
+            setNotification({type: "error", text: data.message, active: true});
+            return;
+        }
+
+        history.push("/dashboard");
     }
 
     function handleInputChange(e) {
@@ -42,13 +67,17 @@ export function LoginForm() {
         });
     }
 
+    function isPasswordValid(password) {
+        return password.match(/(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}/g) !== null;
+    }
+
     return (
         <form className={styles.login_form}
               autoComplete={"off"}
               method={"POST"}
         >
             <div className={styles.login_form_group}>
-                <input id={"userName"}
+                <input id={"name"}
                        type={"text"}
                        className={styles.login_form_input}
                        onChange={handleInputChange}
@@ -56,7 +85,7 @@ export function LoginForm() {
                 <label className={styles.login_form_label}>Ваш логин</label>
             </div>
             <div className={styles.login_form_group}>
-                <input id={"userPassword"}
+                <input id={"password"}
                        type={"password"}
                        className={styles.login_form_input}
                        onChange={handleInputChange}
@@ -64,7 +93,7 @@ export function LoginForm() {
                 <label className={styles.login_form_label}>Ваш пароль</label>
             </div>
             {isRegistrationActive ? <div className={styles.login_form_group}>
-                <input id={"userPasswordCheck"}
+                <input id={"password_check"}
                        type={"password"}
                        className={styles.login_form_input}
                        onChange={handleInputChange}
@@ -81,75 +110,5 @@ export function LoginForm() {
                 {isRegistrationActive ? "Войти в сущетсвующую уч. запись" : "Зарегистрироваться"}
             </p>
         </form>
-        // <>
-        //     {isRegistrationActive === false ?
-        //         <form className={styles.login_form}
-        //               autoComplete={"off"}
-        //               method={"GET"}>
-        //             <div className={styles.login_form_group}>
-        //                 <input id={"userName"}
-        //                        type={"text"}
-        //                        className={styles.login_form_input}
-        //                        onChange={handleInputChange}
-        //                        required/>
-        //                 <label className={styles.login_form_label}>Ваш логин</label>
-        //             </div>
-        //             <div className={styles.login_form_group}>
-        //                 <input id={"userPassword"}
-        //                        type={"password"}
-        //                        className={styles.login_form_input}
-        //                        onChange={handleInputChange}
-        //                        required/>
-        //                 <label className={styles.login_form_label}>Ваш пароль</label>
-        //             </div>
-        //             <button className={styles.login_form_submit_button}
-        //                     type={"button"}
-        //                     onClick={handleSignInSubmit}>
-        //                 Войти
-        //             </button>
-        //             <p className={styles.login_form_registration_link}
-        //                onClick={() => setIsRegistrationActive(!isRegistrationActive)}>
-        //                 Зарегистрироваться
-        //             </p>
-        //         </form>
-        //         :
-        //         <form className={styles.login_form}
-        //               autoComplete={"off"}
-        //               method={"POST"}>
-        //             <div className={styles.login_form_group}>
-        //                 <input id={"userName"}
-        //                        type={"text"}
-        //                        className={styles.login_form_input}
-        //                        onChange={handleInputChange}
-        //                        required/>
-        //                 <label className={styles.login_form_label}>Ваш логин</label>
-        //             </div>
-        //             <div className={styles.login_form_group}>
-        //                 <input id={"userPassword"}
-        //                        type={"password"}
-        //                        className={styles.login_form_input}
-        //                        onChange={handleInputChange}
-        //                        required/>
-        //                 <label className={styles.login_form_label}>Ваш пароль</label>
-        //             </div>
-        //             <div className={styles.login_form_group}>
-        //                 <input id={"userPasswordCheck"}
-        //                        type={"password"}
-        //                        className={styles.login_form_input}
-        //                        onChange={handleInputChange}
-        //                        required/>
-        //                 <label className={styles.login_form_label}>Повторите пароль</label>
-        //             </div>
-        //             <button className={styles.login_form_submit_button}
-        //                     type={"button"}
-        //                     onClick={handleSignUpSubmit}>
-        //                 Войти
-        //             </button>
-        //             <p className={styles.login_form_registration_link}
-        //                onClick={() => setIsRegistrationActive(!isRegistrationActive)}>
-        //                 Войти в существующую уч. запись
-        //             </p>
-        //         </form>}
-        // </>
     )
 }

@@ -1,5 +1,5 @@
 <?php
-require_once("db.php");
+require_once("modules/db.php");
 ?>
 <!doctype html>
 <html lang="ru">
@@ -13,8 +13,7 @@ require_once("db.php");
 <body>
 <div id="app"></div>
 <script type="text/javascript" src="./dist/main.bundle.js">
-    console.log("getRequest: " + <?php echo json_encode(get_request)?>);
-    console.log("postRequest: " + <?php echo json_encode(post_request)?>);
+
 </script>
 </body>
 </html>
