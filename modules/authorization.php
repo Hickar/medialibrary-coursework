@@ -23,22 +23,24 @@ class Authorization {
 			return;
 		}
 
-		$user_query = "SELECT * FROM USERS WHERE UserName = '{$user_name}' AND UserPassword = '{$user_password}';";
+		$user_query = "SELECT * FROM USERS WHERE UserName = '{$user_name}';";
 		$run_query = $this->db->query($user_query) or die($this->db->error);
 		$user_row = $run_query->fetch_array(MYSQLI_ASSOC);
 
-		if ($user_row) {
+		if ($user_row && password_verify($user_password, $user_row['UserPassword'])) {
 			$_SESSION['userID'] = $user_row['UserID'];
 			$_SESSION['userName'] = $user_row['UserName'];
 			$_SESSION['status'] = TRUE;
-			$response['err'] = FALSE;
-			$response['message'] = "Вы успешно зашли в учётную запись";
+			echo json_encode(array(
+				'message' => "Добро пожаловать, {$user_row['UserName']}",
+				'err'=>FALSE
+			), JSON_UNESCAPED_UNICODE);
 		} else {
-			$response['err'] = TRUE;
-			$response['message'] = "Пользователя с данными идентификаторами не существует.\nПроверьте логин/пароль";
+			echo json_encode(array(
+				'message' => "Пользователя с данными идентификаторами не существует.\nПроверьте логин/пароль",
+				'err' => TRUE
+			), JSON_UNESCAPED_UNICODE);
 		}
-
-		echo json_encode($response, JSON_UNESCAPED_UNICODE);
 	}
 
 	public function signup(string $user_name, string $user_password, string $user_password_check) {
@@ -52,31 +54,37 @@ class Authorization {
 
 		if ($user_password !== $user_password_check) {
 			echo json_encode(array(
-				'message'=>'Пароли должны совпадать',
-				'err'=>TRUE
+				'message' => 'Пароли должны совпадать',
+				'err' => TRUE
 			), JSON_UNESCAPED_UNICODE);
 			return;
 		}
+
+		$user_password = password_hash($user_password, CRYPT_SHA256);
 
 		$user_query = "SELECT * FROM USERS WHERE UserName = '{$user_name}';";
 		$run_query = $this->db->query($user_query) or die($this->db->error);
 		$user_row = $run_query->fetch_array(MYSQLI_ASSOC);
 
 		if ($user_row) {
-			$response['err'] = TRUE;
-			$response['message'] = "Пользователь с данным идентификатором уже существует";
+			echo json_encode(array(
+				'message' => 'Пользователь с данным идентификатором уже существует',
+				'err' => TRUE
+			), JSON_UNESCAPED_UNICODE);
 		} else {
 			$user_register_query = "INSERT INTO USERS (UserID, UserName, UserPassword) VALUES (NULL, '{$user_name}', '{$user_password}');";
 			if ($this->db->query($user_register_query)) {
-				$response['err'] = FALSE;
-				$response['message'] = "Вы были успешно зарегистрированы";
+				echo json_encode(array(
+					'message' => 'Вы были успешно зарегистрированы',
+					'err' => FALSE
+				), JSON_UNESCAPED_UNICODE);
 			} else {
-				$response['err'] = TRUE;
-				$response['message'] = "Ошибка при запросе к БД";
+				echo json_encode(array(
+					'message' => 'Ошибка при запросе к БД',
+					'err' => TRUE
+				), JSON_UNESCAPED_UNICODE);
 			}
 		}
-
-		echo json_encode($response, JSON_UNESCAPED_UNICODE);
 	}
 
 	public function logout() {

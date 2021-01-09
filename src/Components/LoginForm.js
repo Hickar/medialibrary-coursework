@@ -34,12 +34,13 @@ export function LoginForm() {
     }
 
     if (isRegistrationActive) {
-      setNotification({type: "message", text: data.message, active: true});
       setIsRegistrationActive(false);
     } else {
       history.push("/");
       setIsAuthorized(true);
     }
+
+    setNotification({type: "message", text: data.message, active: true});
   }
 
   function handleInputChange(e) {
