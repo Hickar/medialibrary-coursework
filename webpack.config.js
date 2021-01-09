@@ -15,12 +15,6 @@ let config = {
 		publicPath: "/",
 		contentBase: path.join(__dirname),
 		compress: true,
-		// proxy: [
-		// 	{
-		// 		path: /./,
-		// 		target: "http://medialibrary.local"
-		// 	}
-		// ],
 		writeToDisk: true
 	},
 	resolve: {
@@ -52,7 +46,7 @@ let config = {
 					{
 						loader: "file-loader",
 						options: {
-							name: "../css/[hash].[ext]"
+							name: "../dist/assets/[hash].[ext]"
 						}
 					}
 				]

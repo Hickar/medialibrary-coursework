@@ -1,5 +1,6 @@
 <?php
-require_once("modules/db.php");
+require_once("modules/database.php");
+session_start();
 ?>
 <!doctype html>
 <html lang="ru">
@@ -13,7 +14,7 @@ require_once("modules/db.php");
 <body>
 <div id="app"></div>
 <script type="text/javascript" src="./dist/main.bundle.js">
-
+    var isAuthed = <?php json_encode($_SESSION['status']); ?>;
 </script>
 </body>
 </html>
