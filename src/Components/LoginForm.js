@@ -9,15 +9,14 @@ export function LoginForm() {
     const history = useHistory();
     const setNotification = useContext(NotificationContext);
 
-    async function handleSignUpSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
 
-        if (userData.password !== userData.password_check) {
-            setNotification({type: "error", text: "Пароли должны совпадать", active: true});
-            return;
-        }
+        const actionURL = isRegistrationActive ?
+            "http://medialibrary.local/modules/actions.php?register" :
+            "http://medialibrary.local/modules/actions.php?login";
 
-        const response = await fetch("http://medialibrary.local/modules/actions.php?register", {
+        const response = await fetch(actionURL, {
             method: "POST",
             body: JSON.stringify(userData),
             headers: {
@@ -32,29 +31,12 @@ export function LoginForm() {
             return;
         }
 
-        setNotification({type: "message", text: data.message, active: true});
-        setIsRegistrationActive(false);
-    }
-
-    async function handleSignInSubmit(e) {
-        e.preventDefault();
-
-        const response = await fetch("http://medialibrary.local/modules/actions.php?login", {
-            method: "POST",
-            body: JSON.stringify(userData),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const data = await response.json();
-
-        if (data.err) {
-            setNotification({type: "error", text: data.message, active: true});
-            return;
+        if (isRegistrationActive) {
+            setNotification({type: "message", text: data.message, active: true});
+            setIsRegistrationActive(false);
+        } else {
+            history.push("/dashboard");
         }
-
-        history.push("/dashboard");
     }
 
     function handleInputChange(e) {
@@ -65,10 +47,6 @@ export function LoginForm() {
         setUserData(prevState => {
             return {...prevState, [userProperty]: value}
         });
-    }
-
-    function isPasswordValid(password) {
-        return password.match(/(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}/g) !== null;
     }
 
     return (
@@ -102,7 +80,7 @@ export function LoginForm() {
             </div> : null}
             <button className={styles.login_form_submit_button}
                     type={"button"}
-                    onClick={isRegistrationActive ? handleSignUpSubmit : handleSignInSubmit}>
+                    onClick={handleSubmit}>
                 {isRegistrationActive ? "Зарегистрироваться" : "Войти"}
             </button>
             <p className={styles.login_form_registration_link}
