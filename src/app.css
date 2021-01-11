@@ -5,21 +5,21 @@
     --text-primary-light: #E4E4E4;
     --text-secondary-light: #B2B2B2;
     --text-label-light: #979797;
-    --text-button-light: #ffffff;
+    --text-button-light: #FFFFFF;
 
-    --text-primary-dark: #000;
-    --text-form: #a4a4a4;
+    --text-primary-dark: #000000;
+    --text-form: #A4A4A4;
 
-    --background-light: #f0f0f0;
+    --background-light: #F0F0F0;
     --background-dark: #282828;
     --background-panel: white;
 
-    --border-light: #cdcdcd;
+    --border-light: #AEAEAE;
     --border-dark: #535353;
 
-    --accent-fade: #85c8ff;
-    --accent-primary: #0083f6;
-    --accent-focus: #015ecf;
+    --accent-fade: #85C8FF;
+    --accent-primary: #0083F6;
+    --accent-focus: #015ECF;
 
     --error-primary: #B00035;
 

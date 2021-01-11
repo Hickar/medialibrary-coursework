@@ -8,16 +8,16 @@ import styles from "./Dashboard.module.css";
 
 export function Dashboard() {
   return (
-    <>
+    <div className={styles.main}>
       <SideNavbar/>
-      <div className={styles.main_wrapper}>
+      <div className={styles.content}>
         <Route path={"/dashboard/files"}>
-          {/*<Files/>*/}
+          <Files/>
         </Route>
         <Route path={"/dashboard/settings"}>
           {/*<Settings/>*/}
         </Route>
       </div>
-    </>
+    </div>
   )
 }

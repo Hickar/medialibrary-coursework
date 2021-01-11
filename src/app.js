@@ -31,7 +31,7 @@ function App() {
       <AuthorizationContext.Provider value={setIsAuthorized}>
         <Notification status={notificationStatus}/>
         <Route path={"/"} render={() => {
-          return isAuthorized ? <Redirect to={"/dashboard"}/> : <Redirect to={"/login"}/>
+          return isAuthorized ? <Redirect to={"/dashboard/files"}/> : <Redirect to={"/login"}/>
         }}/>
         <Route path={"/dashboard"}>
           <Dashboard/>
