@@ -2,14 +2,12 @@ import React, {useState, useContext} from "react";
 import styles from "./LoginForm.module.css";
 import {useHistory} from "react-router";
 import {NotificationContext} from "./NotificationContext";
-import {AuthorizationContext} from "./AuthorizationContext";
 
 export function LoginForm() {
   const [isRegistrationActive, setIsRegistrationActive] = useState(false);
   const [userData, setUserData] = useState({name: "", password: "", password_check: ""});
   const history = useHistory();
   const setNotification = useContext(NotificationContext);
-  const setIsAuthorized = useContext(AuthorizationContext);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -37,7 +35,6 @@ export function LoginForm() {
       setIsRegistrationActive(false);
     } else {
       history.push("/");
-      setIsAuthorized(true);
     }
 
     setNotification({type: "message", text: data.message, active: true});

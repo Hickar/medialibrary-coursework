@@ -8,7 +8,7 @@ class Authorization {
 	}
 
 	public function isAuthorized(): bool {
-		return isset($_SESSION['status']) === true;
+		return isset($_SESSION['status']) ? $_SESSION['status'] : false;
 	}
 
 	public function login(string $user_name, string $user_password) {
@@ -31,9 +31,10 @@ class Authorization {
 			$_SESSION['userID'] = $user_row['UserID'];
 			$_SESSION['userName'] = $user_row['UserName'];
 			$_SESSION['status'] = TRUE;
+			setcookie('userName', $user_row['UserName'], time() + 8600, '/');
 			echo json_encode(array(
 				'message' => "Добро пожаловать, {$user_row['UserName']}",
-				'err'=>FALSE
+				'err' => FALSE
 			), JSON_UNESCAPED_UNICODE);
 		} else {
 			echo json_encode(array(
@@ -90,6 +91,11 @@ class Authorization {
 	public function logout() {
 		session_unset();
 		session_destroy();
+		unset($_COOKIE['userName']);
+		echo json_encode(array(
+			'message' => TRUE,
+			'err' => FALSE
+		), JSON_UNESCAPED_UNICODE);
 	}
 }
 

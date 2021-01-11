@@ -1,0 +1,54 @@
+import React, {useContext} from "react";
+import styles from "./SideNavbar.module.css";
+import {useHistory} from "react-router";
+import {NavLink} from "react-router-dom";
+import {AuthorizationContext} from "./AuthorizationContext";
+import {NotificationContext} from "./NotificationContext";
+import profileIcon from "../assets/profile_Icon.svg";
+import filesIcon from "../assets/files_Icon.svg";
+import settingsIcon from "../assets/settings_Icon.svg";
+import logoutIcon from "../assets/logout_Icon.svg";
+import {getCookie} from "../api/utils";
+
+export function SideNavbar() {
+  const history = useHistory();
+  // const setAuthorized = useContext(AuthorizationContext);
+  const setNotification = useContext(NotificationContext);
+  const username = getCookie("userName");
+
+  async function handleLogout() {
+    const response = await fetch("http://medialibrary.local/modules/actions.php?logout", {
+      method: "GET"
+    })
+
+    const data = await response.json();
+
+    if (!data.err) {
+      setNotification({type: "message", text: "Вы вышли из учётной записи", active: true});
+      history.push("/");
+    }
+  }
+
+  return (
+    <div className={styles.navbar}>
+      <div className={styles.navbar_link}>
+        <img className={styles.navbar_link_icon} src={profileIcon} alt={"Profile icon"}/>
+        <div className={styles.navbar_link_text}>{username}</div>
+      </div>
+      <div className={styles.delimiter}/>
+      <NavLink className={styles.navbar_link} activeClassName={styles.navbar_link_active} to={"/dashboard/files"}>
+        <img className={styles.navbar_link_icon} src={filesIcon} alt={"Files icon"}/>
+        <div className={styles.navbar_link_text}>Файлы</div>
+      </NavLink>
+      <NavLink className={styles.navbar_link} activeClassName={styles.navbar_link_active} to={"/dashboard/settings"}>
+        <img className={styles.navbar_link_icon} src={settingsIcon} alt={"Settings icon"}/>
+        <div className={styles.navbar_link_text}>Настройки</div>
+      </NavLink>
+      <div className={styles.delimiter}/>
+      <a onClick={handleLogout} className={styles.navbar_link}>
+        <img className={styles.navbar_link_icon} src={logoutIcon} alt={"Logout icon"}/>
+        <div className={styles.navbar_link_text}>Выйти</div>
+      </a>
+    </div>
+  )
+}

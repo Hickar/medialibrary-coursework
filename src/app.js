@@ -5,20 +5,34 @@ import {BrowserRouter as Router, Route, Redirect} from "react-router-dom";
 import {LoginPage} from "./Components/LoginPage";
 import {Dashboard} from "./Components/Dashboard";
 import {AuthorizationContext} from "./Components/AuthorizationContext";
-import {NotificationContext} from "./Components/NotificationContext"
+import {NotificationContext} from "./Components/NotificationContext";
 import {Notification} from "./Components/Notification";
 
 function App() {
   const [notificationStatus, setNotificationStatus] = useState({type: "", text: "", active: false});
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(fetchIsAuthorized());
+
+  async function fetchIsAuthorized() {
+    const response = await fetch("http://medialibrary.local/modules/actions.php?isAuthorized", {
+      method: "GET"
+    });
+
+    const data = await response.json();
+
+    setIsAuthorized(data.message === true);
+  }
+
+  useEffect(() => {
+    setIsAuthorized(fetchIsAuthorized());
+  }, []);
 
   return (
     <NotificationContext.Provider value={setNotificationStatus}>
-      <Notification status={notificationStatus}/>
       <AuthorizationContext.Provider value={setIsAuthorized}>
-        <Route path={"/"}>
-          {isAuthorized ? <Redirect to={"/dashboard"}/> : <Redirect to={"/login"}/>}
-        </Route>
+        <Notification status={notificationStatus}/>
+        <Route path={"/"} render={() => {
+          return isAuthorized ? <Redirect to={"/dashboard"}/> : <Redirect to={"/login"}/>
+        }}/>
         <Route path={"/dashboard"}>
           <Dashboard/>
         </Route>

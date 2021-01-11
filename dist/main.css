@@ -394,6 +394,60 @@ button {
 ._2-fXoKIqR0FuGHVB8g3rgq {
   display: none;
 }
+._32wVJb8dH-OocuiZR2TKn {
+    width: 250px;
+    height: 100vh;
+    padding: 1rem 0;
+    margin: 0;
+    border-right: 1px solid #AEAEAE;
+}
+
+._1PS7YXAvHZ_4s7rbIPVQJV {
+    border-bottom: 1px solid #AEAEAE;
+}
+
+._3Gq1Fm8vnNE7g5Bgzn-aTi {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-flow: row nowrap;
+    font-size: 13px;
+    padding: .5rem 1rem;
+    transition: .2s background-color ease;
+}
+
+._3Gq1Fm8vnNE7g5Bgzn-aTi:focus {
+    outline: none;
+}
+
+._1CxWLvZu5S6Uj3V1ZVDSSJ {
+    color: var(--accent-primary)
+}
+
+._3Gq1Fm8vnNE7g5Bgzn-aTi:hover {
+    background-color: #D0D0D0;
+}
+
+._3fIS0Hm4XxTf5-K7_xK9t5 {
+    display: block;
+    width: 24px;
+    height: 24px;
+    margin: 0 .5rem 0 0;
+}
+
+._3qUPoQZ6o51UXbrPZ3OGrN {
+
+}
+
+._3kzGBcv9D_M3q6n5c7uba3 {
+    height: 1px;
+    margin: 1rem;
+    border-bottom: 1px solid #AEAEAE;
+}
+._1ha1JzA07XySL9rIrXx6Fj {
+
+}
 ._18Y1FGtoGeeuwiEDhB0yTh {
   display: block;
   position: absolute;

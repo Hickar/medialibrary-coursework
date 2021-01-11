@@ -14,7 +14,6 @@ session_start();
 <body>
 <div id="app"></div>
 <script type="text/javascript" src="./dist/main.bundle.js">
-    var isAuthed = <?php json_encode($_SESSION['status']); ?>;
 </script>
 </body>
 </html>
