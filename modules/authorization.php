@@ -3,8 +3,8 @@
 class Authorization {
 	private $db = null;
 
-	public function __construct(?mysqli $db) {
-		$this->db = $db;
+	public function __construct(?mysqli &$db) {
+		$this->db = &$db;
 	}
 
 	public function isAuthorized(): bool {
@@ -23,17 +23,17 @@ class Authorization {
 			return;
 		}
 
-		$user_query = "SELECT * FROM USERS WHERE UserName = '{$user_name}';";
+		$user_query = "SELECT * FROM USERS WHERE user_name = '{$user_name}';";
 		$run_query = $this->db->query($user_query) or die($this->db->error);
 		$user_row = $run_query->fetch_array(MYSQLI_ASSOC);
 
-		if ($user_row && password_verify($user_password, $user_row['UserPassword'])) {
-			$_SESSION['userID'] = $user_row['UserID'];
-			$_SESSION['userName'] = $user_row['UserName'];
+		if ($user_row && password_verify($user_password, $user_row['user_password'])) {
+			$_SESSION['userID'] = $user_row['user_ID'];
+			$_SESSION['userName'] = $user_row['user_name'];
 			$_SESSION['status'] = TRUE;
-			setcookie('userName', $user_row['UserName'], time() + 8600, '/');
+			setcookie('userName', $user_row['user_name'], time() + 8600, '/');
 			echo json_encode(array(
-				'message' => "Добро пожаловать, {$user_row['UserName']}",
+				'message' => "Добро пожаловать, {$user_row['user_name']}",
 				'err' => FALSE
 			), JSON_UNESCAPED_UNICODE);
 		} else {
@@ -63,7 +63,7 @@ class Authorization {
 
 		$user_password = password_hash($user_password, CRYPT_SHA256);
 
-		$user_query = "SELECT * FROM USERS WHERE UserName = '{$user_name}';";
+		$user_query = "SELECT * FROM USERS WHERE user_name = '{$user_name}';";
 		$run_query = $this->db->query($user_query) or die($this->db->error);
 		$user_row = $run_query->fetch_array(MYSQLI_ASSOC);
 
@@ -73,7 +73,7 @@ class Authorization {
 				'err' => TRUE
 			), JSON_UNESCAPED_UNICODE);
 		} else {
-			$user_register_query = "INSERT INTO USERS (UserID, UserName, UserPassword) VALUES (NULL, '{$user_name}', '{$user_password}');";
+			$user_register_query = "INSERT INTO USERS (user_ID, user_name, user_password) VALUES (NULL, '{$user_name}', '{$user_password}');";
 			if ($this->db->query($user_register_query)) {
 				echo json_encode(array(
 					'message' => 'Вы были успешно зарегистрированы',

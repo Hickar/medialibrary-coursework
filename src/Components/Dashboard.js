@@ -5,7 +5,6 @@ import {Files} from "./Files";
 // import {Settings} from "./Settings";
 import styles from "./Dashboard.module.css";
 
-
 export function Dashboard() {
   return (
     <div className={styles.main}>

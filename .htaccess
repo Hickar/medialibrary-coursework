@@ -7,6 +7,7 @@ Redirect /dashboard /
 Redirect /files /
 Redirect /settings /
 Redirect /about /
+Redirect 403 /storage
 
 RewriteCond %{REQUEST_METHOD} !=POST
 RewriteCond %{REQUEST_FILENAME} !-f
