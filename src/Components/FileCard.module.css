@@ -21,14 +21,14 @@
 
 .info {
     width: 100%;
-    padding: 1rem;
+    padding: .5rem .75rem;
 }
 
 .title {
     width: 100%;
-    font-size: var(--paragraph-size);
+    font-size: 16px;
     font-weight: 500;
-    color: var(--text-label-light);
+    color: var(--text-primary-dark);
     margin: 0 0 .5rem 0;
 }
 

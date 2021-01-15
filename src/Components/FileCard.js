@@ -7,7 +7,7 @@ import documentIcon from "../assets/documentIcon.svg";
 export function FileCard(props) {
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const mediaData = props.mediafile;
-  const mediaElement = getTypeSpecificMediaElement(mediaData.type);
+  const mediaElement = getTypeSpecificMediaElement(mediaData.file_type);
 
   function handleClick(e) {
     if (props.onClick) {
@@ -23,7 +23,7 @@ export function FileCard(props) {
       case "image":
       case "video":
         return <img className={styles.thumbnail}
-                    src={mediaData.thumbnail}
+                    src={mediaData.src}
                     alt={"Media file thumbnail"}/>;
       case "audio":
         return <img className={styles.thumbnail_default}
@@ -60,8 +60,8 @@ export function FileCard(props) {
             : null}
         </div>
         <div className={styles.info}>
-          <div className={styles.title}>{mediaData.title}</div>
-          <div className={styles.text}>{mediaData.text}</div>
+          <div className={styles.title}>{mediaData.file_name}</div>
+          {/*<div className={styles.text}>{mediaData.text}</div>*/}
         </div>
       </div>
     </div>

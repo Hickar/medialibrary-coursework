@@ -30,9 +30,10 @@ class FileManager {
 	}
 
 	public function get_user_file($file_ID) {
-		$file_select_query = "SELECT 1 FROM FILES WHERE file_ID='{$file_ID}'";
+		$file_select_query = "SELECT * FROM FILES WHERE file_ID='{$file_ID}'";
 		$result = $this->db->query($file_select_query) or die($this->db->error);
-		$file_path = $result->fetch_array(MYSQLI_ASSOC)['file_URL'];
+		$file_record = $result->fetch_array(MYSQLI_ASSOC);
+		$file_path = $file_record['file_URL'];
 
 		if (file_exists($file_path)) {
 			$file_info = finfo_open(FILEINFO_MIME_TYPE);
@@ -71,9 +72,9 @@ class FileManager {
 		$file_info = pathinfo($file['name']);
 		$file_name = $file_info['filename'];
 		$file_type = $this->get_file_type($file_info['extension']);
-
 		$file_ID = sha1($file_name);
 		$file_path = $dir_path . '/' . $file_ID . '.' . $file_info['extension'];
+
 		$file_insert_query = "INSERT INTO FILES (file_owner, file_name, file_URL, file_type, file_ID)" .
 			"VALUES ('{$file_owner}', '{$file_name}', '{$file_path}', '{$file_type}', '{$file_ID}')";
 

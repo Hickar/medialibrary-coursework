@@ -13,7 +13,7 @@ import {getCookie} from "../api/utils";
 export function SideNavbar() {
   const history = useHistory();
   const setNotification = useContext(NotificationContext);
-  const username = getCookie("userName");
+  const username = getCookie("user_name");
 
   async function handleLogout() {
     const response = await fetch("http://medialibrary.local/modules/actions.php?logout", {
@@ -36,7 +36,7 @@ export function SideNavbar() {
       </div>
       <div className={styles.delimiter}/>
       <NavLink className={styles.navbar_link} activeClassName={styles.navbar_link_active} to={"/dashboard/files"}>
-        <img className={styles.navbar_link_icon} src={filesIcon} alt={"Files icon"}/>
+        <img className={styles.navbar_link_icon} src={filesIcon} alt={"FilesContainer icon"}/>
         <div className={styles.navbar_link_text}>Файлы</div>
       </NavLink>
       <NavLink className={styles.navbar_link} activeClassName={styles.navbar_link_active} to={"/dashboard/settings"}>

@@ -1,12 +1,15 @@
 import React, {useState, useRef, useEffect, useContext} from "react";
-import styles from "./Files.module.css";
+import styles from "./FilesContainer.module.css";
 import {FileCard} from "./FileCard";
 import {NotificationContext} from "./NotificationContext";
 import uploadFileIcon from "../assets/uploadFile_Icon.svg";
+import {readFile} from "../api/utils";
 
-export function Files(props) {
+export function FilesContainer() {
   const setNotification = useContext(NotificationContext);
   const fileInput = useRef();
+  const [userFilesFetched, setUserFilesFetched] = useState(false);
+  const [userFiles, setUserFiles] = useState([]);
 
   function handleClickOnUploadFiles(e) {
     if (fileInput.current) {
@@ -22,8 +25,6 @@ export function Files(props) {
       formData.append("files[]", file, file.name);
     }
 
-    console.log("formData: " + Object.keys(formData));
-
     const response = await fetch("http://medialibrary.local/modules/actions.php?uploadFiles", {
       body: formData,
       method: "POST"
@@ -38,7 +39,32 @@ export function Files(props) {
     }
   }
 
+  async function fetchUserFiles() {
+    const response = await fetch("http://medialibrary.local/modules/actions.php?getUserFiles", {
+      method: "GET"
+    });
+
+    const fileRows = await response.json();
+
+    for (const file of fileRows.message) {
+      const file_ID = file.file_ID;
+      const actionURL = `http://medialibrary.local/modules/actions.php?getUserFile&file_ID=${file_ID}`;
+      const response = await fetch(actionURL, {
+        method: "GET"
+      });
+
+      const fileRaw = await response.blob();
+      file.src = await readFile(fileRaw);
+    }
+
+    await setUserFiles(fileRows.message);
+    await setUserFilesFetched(true);
+  }
+
   useEffect(() => {
+    if (!userFilesFetched) {
+      fetchUserFiles();
+    }
     if (fileInput.current) {
       fileInput.current.addEventListener("change", uploadFiles);
     }
@@ -53,20 +79,9 @@ export function Files(props) {
         </button>
       </div>
       <div className={styles.files_wrapper}>
-        <FileCard mediafile={{type: "document"}}/>
-        <FileCard mediafile={{type: "document"}}/>
-        <FileCard mediafile={{type: "document"}}/>
-        <FileCard mediafile={{type: "document"}}/>
-        <FileCard mediafile={{type: "document"}}/>
-        <FileCard mediafile={{type: "document"}}/>
-        <FileCard mediafile={{type: "document"}}/>
-        <FileCard mediafile={{type: "document"}}/>
-        <FileCard mediafile={{type: "document"}}/>
-        <FileCard mediafile={{type: "document"}}/>
-        <FileCard mediafile={{type: "document"}}/>
-        <FileCard mediafile={{type: "document"}}/>
-        <FileCard mediafile={{type: "document"}}/>
-        <FileCard mediafile={{type: "document"}}/>
+        {userFilesFetched ? userFiles.map((file) => {
+          return <FileCard mediafile={file}/>;
+        }) : null}
       </div>
     </>
   );
