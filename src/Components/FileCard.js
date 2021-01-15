@@ -28,7 +28,7 @@ export function FileCard(props) {
       case "audio":
         return <img className={styles.thumbnail_default}
                     src={isAudioPlaying ? pauseIcon : playIcon}
-                    alt={"Audio play/pause button"}/>
+                    alt={"Audio play/pause button"}/>;
       // return <svg data-is-active={isMediaPlaying} className={styles.audio_button} width="128" height="128"
       // 						viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
       // 	<circle cx="64" cy="64" r="62" stroke="#4E4E4E" stroke-width="4"/>
@@ -53,11 +53,13 @@ export function FileCard(props) {
     <div className={styles.wrapper}>
       <div className={styles.card}>
         <div className={styles.media_wrapper}>
+          {/*<div className={"test"}>*/}
           <div className={styles.link} data-src={mediaData.src} data-type={mediaData.type} onClick={handleClick}/>
           {mediaElement}
           {isAudioPlaying === true ?
             <input type={"range"} className={styles.progress_bar} min={"0"} max={"100"} value={"0"}/>
             : null}
+          {/*</div>*/}
         </div>
         <div className={styles.info}>
           <div className={styles.title}>{mediaData.file_name}</div>
