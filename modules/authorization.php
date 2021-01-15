@@ -28,10 +28,10 @@ class Authorization {
 		$user_row = $run_query->fetch_array(MYSQLI_ASSOC);
 
 		if ($user_row && password_verify($user_password, $user_row['user_password'])) {
-			$_SESSION['userID'] = $user_row['user_ID'];
-			$_SESSION['userName'] = $user_row['user_name'];
+			$_SESSION['user_ID'] = $user_row['user_ID'];
+			$_SESSION['user_name'] = $user_row['user_name'];
 			$_SESSION['status'] = TRUE;
-			setcookie('userName', $user_row['user_name'], time() + 8600, '/');
+			setcookie('user_name', $user_row['user_name'], time() + 8600, '/');
 			echo json_encode(array(
 				'message' => "Добро пожаловать, {$user_row['user_name']}",
 				'err' => FALSE
@@ -91,7 +91,7 @@ class Authorization {
 	public function logout() {
 		session_unset();
 		session_destroy();
-		unset($_COOKIE['userName']);
+		unset($_COOKIE['user_name']);
 		echo json_encode(array(
 			'message' => TRUE,
 			'err' => FALSE

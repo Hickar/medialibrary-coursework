@@ -29,5 +29,15 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['isAuthorized'])) {
 
 if (isset($_REQUEST['uploadFiles']) && isset($_FILES['files'])) {
 	$files = $file_manager->normalize_user_files($_FILES['files']);
-	$file_manager->upload_user_files($files, "../storage/".$_SESSION['userID']);
+	$file_manager->upload_user_files($files, "../storage/".$_SESSION['user_ID']);
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['getUserFiles'])) {
+	$file_manager->get_user_files_info();
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['getUserFile'])) {
+	if ($user_data['user_ID'] == $_SESSION['user_ID']) {
+		$file_manager->get_user_file($user_data['file_ID']);
+	}
 }

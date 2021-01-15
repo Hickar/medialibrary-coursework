@@ -7,8 +7,48 @@ class FileManager {
 		$this->db = $db;
 	}
 
-	public function get_user_files() {
+	public function get_user_files_info() {
+		$file_owner = $_SESSION['user_name'];
 
+		$file_select_query = "SELECT * FROM FILES WHERE file_owner='{$file_owner}'";
+		$result = $this->db->query($file_select_query) or die($this->db->error);
+		$file_rows = array();
+
+		while ($record = $result->fetch_array(MYSQLI_ASSOC)) {
+			$file_rows[] = $record;
+		}
+
+		header('Pragma: public');
+		header('Expires: 604800');
+		header('Cache-Control: must-revalidate');
+		header("Content-type: application/json");
+
+		echo json_encode(array(
+			'message' => $file_rows,
+			'err' => FALSE
+		), JSON_UNESCAPED_UNICODE);
+	}
+
+	public function get_user_file($file_ID) {
+		$file_select_query = "SELECT 1 FROM FILES WHERE file_ID='{$file_ID}'";
+		$result = $this->db->query($file_select_query) or die($this->db->error);
+		$file_path = $result->fetch_array(MYSQLI_ASSOC)['file_URL'];
+
+		if (file_exists($file_path)) {
+			$file_info = finfo_open(FILEINFO_MIME_TYPE);
+			header('Content-Type: ' . finfo_file($file_info, $file_path));
+			finfo_close($file_info);
+
+			header('Content-Disposition: attachment; filename=' . basename($file_path));
+			header('Expires: 0');
+			header('Cache-Control: must-revalidate');
+			header('Pragma: public');
+			header('Content-Length: ' . filesize($file_path));
+
+			ob_clean();
+			flush();
+			readfile($file_path);
+		}
 	}
 
 	public function upload_user_files(array $files, string $dir_path) {
@@ -27,14 +67,15 @@ class FileManager {
 	}
 
 	public function upload_user_file($dir_path, $file) {
-		$file_owner = $_SESSION['userName'];
+		$file_owner = $_SESSION['user_name'];
 		$file_info = pathinfo($file['name']);
 		$file_name = $file_info['filename'];
 		$file_type = $this->get_file_type($file_info['extension']);
 
-		$file_path = $dir_path . '/' . sha1($file_name) . '.' . $file_info['extension'];
-		$file_insert_query = "INSERT INTO FILES (file_owner, file_name, file_URL, file_type)" .
-			"VALUES ('{$file_owner}', '{$file_name}', '{$file_path}', '{$file_type}')";
+		$file_ID = sha1($file_name);
+		$file_path = $dir_path . '/' . $file_ID . '.' . $file_info['extension'];
+		$file_insert_query = "INSERT INTO FILES (file_owner, file_name, file_URL, file_type, file_ID)" .
+			"VALUES ('{$file_owner}', '{$file_name}', '{$file_path}', '{$file_type}', '{$file_ID}')";
 
 		if ($this->db->query($file_insert_query) && move_uploaded_file($file['tmp_name'], $file_path)) {
 			return;
