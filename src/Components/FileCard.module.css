@@ -27,17 +27,17 @@
 .title {
     width: 100%;
     font-size: 14px;
+    line-height: 1.5;
     font-weight: 400;
     color: var(--text-primary-dark);
-    margin: 0 0 .5rem 0;
+    margin: 0 0 .25rem 0;
 }
 
-.text {
-    width: 100%;
-    color: var(--text-primary-dark);
-    font-size: var(--paragraph-small-size);
-    line-height: 1.2;
-    white-space: pre-line;
+.date_added {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-secondary-light);
+    font-weight: 500;
 }
 
 .media_wrapper {

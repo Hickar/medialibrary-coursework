@@ -5,7 +5,7 @@ import pauseIcon from "../assets/audioPauseIcon.svg";
 import documentIcon from "../assets/documentIcon.svg";
 
 export function FileCard(props) {
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  // const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const mediaData = props.mediafile;
   const mediaElement = getTypeSpecificMediaElement(mediaData.file_type);
   const downloadElement = useRef();
@@ -64,18 +64,18 @@ export function FileCard(props) {
           <div
             className={styles.link}
             data-src={mediaData.src}
-            data-type={mediaData.file_type}
             data-filename={mediaData.file_name}
-            onClick={handleClick}
-            data-id={mediaData.file_ID}/>
+            data-id={mediaData.file_ID}
+            data-type={mediaData.file_type}
+            onClick={handleClick}/>
           {mediaElement}
-          {isAudioPlaying === true ?
-            <input type={"range"} className={styles.progress_bar} min={"0"} max={"100"} value={"0"}/>
-            : null}
+          {/*{isAudioPlaying === true ?*/}
+          {/*  <input type={"range"} className={styles.progress_bar} min={"0"} max={"100"} value={"0"}/>*/}
+          {/*  : null}*/}
         </div>
         <div className={styles.info}>
           <div className={styles.title}>{mediaData.file_name}</div>
-          {/*<div className={styles.text}>{mediaData.text}</div>*/}
+          <div className={styles.date_added}>{mediaData.date_added}</div>
         </div>
       </div>
     </div>
