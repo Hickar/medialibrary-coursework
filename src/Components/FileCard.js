@@ -1,5 +1,5 @@
 import styles from "./FileCard.module.css";
-import React, {useState} from "react";
+import React, {useState, useRef} from "react";
 import playIcon from "../assets/audioPlayIcon.svg";
 import pauseIcon from "../assets/audioPauseIcon.svg";
 import documentIcon from "../assets/documentIcon.svg";
@@ -8,13 +8,28 @@ export function FileCard(props) {
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const mediaData = props.mediafile;
   const mediaElement = getTypeSpecificMediaElement(mediaData.file_type);
+  const downloadElement = useRef();
 
-  function handleClick(e) {
-    if (props.onClick) {
-      props.onClick(e);
-    }
-    if (mediaData.type === "audio") {
-      setIsAudioPlaying(!isAudioPlaying);
+  async function handleClick(e) {
+    if (mediaData.file_type === "document" || mediaData.file_type === "other") {
+      const fileID = e.target.dataset.id;
+      const filename = e.target.dataset.filename;
+      const actionURL = `http://medialibrary.local/modules/actions.php?downloadUserFile&file_ID=${fileID}`;
+      const response = await fetch(actionURL, {
+        method: "GET"
+      });
+
+      const fileBlob = await response.blob();
+      const URL = window.URL || window.webkitURL;
+      const downloadURL = await URL.createObjectURL(fileBlob);
+
+      if (downloadElement.current) {
+        downloadElement.current.href = downloadURL;
+        downloadElement.current.download = filename ?? "Без имени";
+        downloadElement.current.click();
+      }
+
+      URL.revokeObjectURL(downloadURL);
     }
   }
 
@@ -29,21 +44,13 @@ export function FileCard(props) {
         return <img className={styles.thumbnail_default}
                     src={isAudioPlaying ? pauseIcon : playIcon}
                     alt={"Audio play/pause button"}/>;
-      // return <svg data-is-active={isMediaPlaying} className={styles.audio_button} width="128" height="128"
-      // 						viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-      // 	<circle cx="64" cy="64" r="62" stroke="#4E4E4E" stroke-width="4"/>
-      // 	<g className={styles.audio_button_pause}>
-      // 		<rect x="46" y="32" width="10" height="64" fill="#4E4E4E"/>
-      // 		<rect x="72" y="32" width="10" height="64" fill="#4E4E4E"/>
-      // 	</g>
-      // 	<path className={styles.audio_button_play} d="M89 64L51.5 91.7128L51.5 36.2872L89 64Z" fill="#4E4E4E"/>
-      // </svg>;
+      case "other":
       case "document":
-        return <a className={styles.link_download} href={mediaData.src} download>
+        return <div className={styles.thumbnail_default_wrapper}>
           <img className={styles.thumbnail_default}
                src={documentIcon}
                alt={"Document Icon"}/>
-        </a>;
+        </div>;
       default:
         throw Error();
     }
@@ -51,15 +58,20 @@ export function FileCard(props) {
 
   return (
     <div className={styles.wrapper}>
+      <a className={styles.hidden} ref={downloadElement} href={""}/>
       <div className={styles.card}>
         <div className={styles.media_wrapper}>
-          {/*<div className={"test"}>*/}
-          <div className={styles.link} data-src={mediaData.src} data-type={mediaData.type} onClick={handleClick}/>
+          <div
+            className={styles.link}
+            data-src={mediaData.src}
+            data-type={mediaData.file_type}
+            data-filename={mediaData.file_name}
+            onClick={handleClick}
+            data-id={mediaData.file_ID}/>
           {mediaElement}
           {isAudioPlaying === true ?
             <input type={"range"} className={styles.progress_bar} min={"0"} max={"100"} value={"0"}/>
             : null}
-          {/*</div>*/}
         </div>
         <div className={styles.info}>
           <div className={styles.title}>{mediaData.file_name}</div>

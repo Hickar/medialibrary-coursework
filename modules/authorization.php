@@ -4,7 +4,7 @@ class Authorization {
 	private $db = null;
 
 	public function __construct(?mysqli &$db) {
-		$this->db = &$db;
+		$this->db = $db;
 	}
 
 	public function isAuthorized(): bool {
@@ -20,7 +20,7 @@ class Authorization {
 				'message' => 'Поля логина и пароля должны быть заполненными',
 				'err' => TRUE
 			), JSON_UNESCAPED_UNICODE);
-			return;
+			exit();
 		}
 
 		$user_query = "SELECT * FROM USERS WHERE user_name = '{$user_name}';";
@@ -50,7 +50,7 @@ class Authorization {
 				'message' => 'Пароль должен быть длинной не менее 8 символов, включать латинские символы, одну заглавную букву и одну цифру.',
 				'err' => TRUE
 			), JSON_UNESCAPED_UNICODE);
-			return;
+			exit();
 		}
 
 		if ($user_password !== $user_password_check) {
@@ -58,7 +58,7 @@ class Authorization {
 				'message' => 'Пароли должны совпадать',
 				'err' => TRUE
 			), JSON_UNESCAPED_UNICODE);
-			return;
+			exit();
 		}
 
 		$user_password = password_hash($user_password, CRYPT_SHA256);
@@ -96,6 +96,7 @@ class Authorization {
 			'message' => TRUE,
 			'err' => FALSE
 		), JSON_UNESCAPED_UNICODE);
+		exit();
 	}
 }
 

@@ -21,6 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['logout'])) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['isAuthorized'])) {
+	if ($auth_manager->isAuthorized()) {
+		setcookie('user_name', $_SESSION['user_name'], time() + 8600, '/');
+	}
 	echo json_encode(array(
 		'message' => $auth_manager->isAuthorized(),
 		'err' => FALSE
@@ -38,4 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['getUserFiles'])) {
 
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['getUserFile'])) {
 	$file_manager->get_user_file($_REQUEST['file_ID']);
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['downloadUserFile'])) {
+	$file_manager->download_user_file($_REQUEST['file_ID']);
 }

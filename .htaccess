@@ -14,3 +14,9 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} !(\.[a-zA-Z0-9]{1,5}|/)$
 RewriteRule (.*)$ /$1/ [R=307,L]
+
+php_value session.gc_maxlifetime 10800
+php_value max_input_time         10800
+php_value max_execution_time     10800
+php_value upload_max_filesize    100M
+php_value post_max_size          100M

@@ -34,6 +34,7 @@ export function FilesContainer() {
 
     if (!data.err) {
       setNotification({type: "message", text: data.message, active: true});
+      setUserFilesFetched(false);
     } else {
       setNotification({type: "error", text: data.message, active: true});
     }
@@ -47,14 +48,18 @@ export function FilesContainer() {
     const fileRows = await response.json();
 
     for (const file of fileRows.message) {
-      const file_ID = file.file_ID;
-      const actionURL = `http://medialibrary.local/modules/actions.php?getUserFile&file_ID=${file_ID}`;
-      const response = await fetch(actionURL, {
-        method: "GET"
-      });
+      if (file.file_type === "document" || file.file_type === "other") {
+        continue;
+      } else {
+        const file_ID = file.file_ID;
+        const actionURL = `http://medialibrary.local/modules/actions.php?getUserFile&file_ID=${file_ID}`;
+        const response = await fetch(actionURL, {
+          method: "GET"
+        });
 
-      const fileRaw = await response.blob();
-      file.src = await readFile(fileRaw);
+        const fileRaw = await response.blob();
+        file.src = await readFile(fileRaw);
+      }
     }
 
     await setUserFiles(fileRows.message);
@@ -65,9 +70,17 @@ export function FilesContainer() {
     if (!userFilesFetched) {
       fetchUserFiles();
     }
+  }, [userFilesFetched]);
+
+  useEffect(() => {
     if (fileInput.current) {
       fileInput.current.addEventListener("change", uploadFiles);
     }
+    return () => {
+      if (fileInput.current) {
+        fileInput.current.removeEventListener("change", uploadFiles);
+      }
+    };
   }, []);
 
   return (
@@ -80,7 +93,7 @@ export function FilesContainer() {
       </div>
       <div className={styles.files_wrapper}>
         {userFilesFetched ? userFiles.map((file) => {
-          return <FileCard mediafile={file}/>;
+          return <FileCard key={file.file_ID} mediafile={file}/>;
         }) : null}
       </div>
     </>

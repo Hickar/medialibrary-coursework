@@ -1,9 +1,9 @@
 <?php
 
 class FileManager {
-	private $db = null;
+	private $db = NULL;
 
-	public function __construct(?mysqli $db) {
+	public function __construct(?mysqli &$db) {
 		$this->db = $db;
 	}
 
@@ -19,8 +19,7 @@ class FileManager {
 		}
 
 		header('Pragma: public');
-		header('Expires: 604800');
-		header('Cache-Control: must-revalidate');
+		header('Cache-Control: max-age=0, must-revalidate');
 		header("Content-type: application/json");
 
 		echo json_encode(array(
@@ -41,13 +40,28 @@ class FileManager {
 			finfo_close($file_info);
 
 			header('Content-Disposition: attachment; filename=' . basename($file_path));
-			header('Expires: 0');
-			header('Cache-Control: must-revalidate');
+			header('Cache-Control: max-age=604800, must-revalidate');
 			header('Pragma: public');
 			header('Content-Length: ' . filesize($file_path));
 
 			ob_clean();
 			flush();
+			readfile($file_path);
+		}
+	}
+
+	public function download_user_file(string $file_ID) {
+		$file_select_query = "SELECT * FROM FILES WHERE file_ID='{$file_ID}'";
+		$result = $this->db->query($file_select_query) or die($this->db->error);
+		$file_record = $result->fetch_array(MYSQLI_ASSOC);
+		$file_path = $file_record['file_URL'];
+
+		if (file_exists($file_path)) {
+			header('Cache-Control: public');
+			header('Content-Description: File Transfer');
+			header('Content-Disposition: attachment; filename=' . basename($file_path));
+			header('Content-Type: ' . mime_content_type($file_path));
+			header('Content-Transfer-Encoding: binary');
 			readfile($file_path);
 		}
 	}
@@ -65,15 +79,24 @@ class FileManager {
 			'message' => 'Файлы были успешно загружены',
 			'err' => FALSE
 		), JSON_UNESCAPED_UNICODE);
+		exit();
 	}
 
 	public function upload_user_file($dir_path, $file) {
 		$file_owner = $_SESSION['user_name'];
 		$file_info = pathinfo($file['name']);
-		$file_name = $file_info['filename'];
+		$file_name = $file_info['filename'] . '.' . $file_info['extension'];
 		$file_type = $this->get_file_type($file_info['extension']);
 		$file_ID = sha1($file_name);
 		$file_path = $dir_path . '/' . $file_ID . '.' . $file_info['extension'];
+
+		if ($file['error'] == 1) {
+			echo json_encode(array(
+				'message' => 'Размер файла не должен превышать 100Мб',
+				'err' => TRUE
+			), JSON_UNESCAPED_UNICODE);
+			exit();
+		}
 
 		$file_insert_query = "INSERT INTO FILES (file_owner, file_name, file_URL, file_type, file_ID)" .
 			"VALUES ('{$file_owner}', '{$file_name}', '{$file_path}', '{$file_type}', '{$file_ID}')";
@@ -81,11 +104,6 @@ class FileManager {
 		if ($this->db->query($file_insert_query) && move_uploaded_file($file['tmp_name'], $file_path)) {
 			return;
 		}
-
-		echo json_encode(array(
-			'message' => 'Ошибка при записи файла',
-			'err' => TRUE
-		), JSON_UNESCAPED_UNICODE);
 	}
 
 	public function get_file_type($extension): string {
