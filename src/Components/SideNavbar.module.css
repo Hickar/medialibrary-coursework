@@ -31,7 +31,7 @@
 }
 
 .navbar_link:hover {
-    background-color: #D0D0D0;
+    background-color: var(--hover-primary);
 }
 
 .navbar_link_icon {

@@ -1,36 +1,41 @@
 import styles from "./FileCard.module.css";
 import React, {useState, useRef} from "react";
-import playIcon from "../assets/audioPlayIcon.svg";
-import pauseIcon from "../assets/audioPauseIcon.svg";
-import documentIcon from "../assets/documentIcon.svg";
+import playIcon from "../assets/audioPlay_Icon.svg";
+import pauseIcon from "../assets/audioPause_Icon.svg";
+import documentIcon from "../assets/document_Icon.svg";
+import dropdownIcon from "../assets/dropdown_Icon.svg";
 
 export function FileCard(props) {
   // const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const mediaData = props.mediafile;
-  const mediaElement = getTypeSpecificMediaElement(mediaData.file_type);
-  const downloadElement = useRef();
+  const mediaContentElement = getTypeSpecificMediaElement(mediaData.file_type);
+  const downloadLinkRef = useRef();
 
-  async function handleClick(e) {
+  async function handleClickOnMediaWrapper(e) {
     if (mediaData.file_type === "document" || mediaData.file_type === "other") {
-      const fileID = e.target.dataset.id;
-      const filename = e.target.dataset.filename;
-      const actionURL = `http://medialibrary.local/modules/actions.php?downloadUserFile&file_ID=${fileID}`;
-      const response = await fetch(actionURL, {
-        method: "GET"
-      });
-
-      const fileBlob = await response.blob();
-      const URL = window.URL || window.webkitURL;
-      const downloadURL = await URL.createObjectURL(fileBlob);
-
-      if (downloadElement.current) {
-        downloadElement.current.href = downloadURL;
-        downloadElement.current.download = filename ?? "Без имени";
-        downloadElement.current.click();
-      }
-
-      URL.revokeObjectURL(downloadURL);
+      handleClickOnDownload();
     }
+  }
+  
+  async function handleClickOnDownload() {
+    const fileID = mediaData.file_id;
+    const filename = mediaData.file_name;
+    const actionURL = `http://medialibrary.local/modules/actions.php?downloadUserFile&file_ID=${fileID}`;
+    const response = await fetch(actionURL, {
+      method: "GET"
+    });
+
+    const fileBlob = await response.blob();
+    const URL = window.URL || window.webkitURL;
+    const downloadURL = await URL.createObjectURL(fileBlob);
+
+    if (downloadLinkRef.current) {
+      downloadLinkRef.current.href = downloadURL;
+      downloadLinkRef.current.download = filename ?? "Без имени";
+      downloadLinkRef.current.click();
+    }
+
+    URL.revokeObjectURL(downloadURL);
   }
 
   function getTypeSpecificMediaElement(type) {
@@ -58,7 +63,7 @@ export function FileCard(props) {
 
   return (
     <div className={styles.wrapper}>
-      <a className={styles.hidden} ref={downloadElement} href={""}/>
+      <a className={styles.hidden} ref={downloadLinkRef} href={""}/>
       <div className={styles.card}>
         <div className={styles.media_wrapper}>
           <div
@@ -67,15 +72,23 @@ export function FileCard(props) {
             data-filename={mediaData.file_name}
             data-id={mediaData.file_ID}
             data-type={mediaData.file_type}
-            onClick={handleClick}/>
-          {mediaElement}
+            onClick={handleClickOnMediaWrapper}/>
+          {mediaContentElement}
           {/*{isAudioPlaying === true ?*/}
           {/*  <input type={"range"} className={styles.progress_bar} min={"0"} max={"100"} value={"0"}/>*/}
           {/*  : null}*/}
         </div>
         <div className={styles.info}>
           <div className={styles.title}>{mediaData.file_name}</div>
-          <div className={styles.date_added}>{mediaData.date_added}</div>
+          <div className={styles.meta_row}>
+            <div className={styles.date_added}>{mediaData.date_added}</div>
+            <div className={styles.dropdown_icon}>
+              <div className={styles.dropdown_menu}>
+                <div onClick={handleClickOnDownload} className={styles.dropdown_menuitem}>Скачать</div>
+                <div className={styles.dropdown_menuitem}>Удалить</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

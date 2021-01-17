@@ -9,6 +9,8 @@
     --text-primary-dark: #000000;
     --text-form: #A4A4A4;
 
+    --hover-primary: #D0D0D0;
+
     --background-light: #F0F0F0;
     --background-dark: #282828;
     --background-panel: white;
@@ -427,7 +429,7 @@ button {
 }
 
 ._3Gq1Fm8vnNE7g5Bgzn-aTi:hover {
-    background-color: #D0D0D0;
+    background-color: var(--hover-primary);
 }
 
 ._3fIS0Hm4XxTf5-K7_xK9t5 {
@@ -514,17 +516,69 @@ button {
 ._306f49JxEpd_NHnlkm9LBP {
     width: 100%;
     font-size: 14px;
+    line-height: 1.5;
     font-weight: 400;
     color: var(--text-primary-dark);
-    margin: 0 0 .5rem 0;
+    white-space: nowrap;
 }
 
-.XB7GTb03bYUumj9YGYybK {
+._2ju6GVseZEl6U7KBD0hjc5 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-flow: row nowrap;
+}
+
+.uQ0PasNDy9eXx2y_FC4T2 {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-secondary-light);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+._1krRu4RYB9BV6C4Rbqr9SS {
+    background-image: url(../dist/assets/4a5973b9c8480b3703ce0837691a6c60.svg);
+    background-position: center;
+    background-size: 24px 24px;
+    width: 24px;
+    height: 24px;
+    transition: .2s background-color ease;
+    border-radius: .25rem;
+    cursor: pointer;
+}
+
+._1krRu4RYB9BV6C4Rbqr9SS:hover {
+    background-color: var(--hover-primary);
+}
+
+._1krRu4RYB9BV6C4Rbqr9SS:hover ._2-CzlD3eHYCuzGd7hHI8BW {
+    display: block;
+}
+
+._2-CzlD3eHYCuzGd7hHI8BW {
+    display: none;
+    min-width: 50%;
+    background-color: var(--background-panel);
+    position: absolute;
+    z-index: 40;
+    bottom: -41px;
+    right: 16px;
+    border-radius: .25rem;
+    overflow: hidden;
+}
+
+._1XCx4TIz2WkL89-bX30Uv1 {
+    font-size: 14px;
     width: 100%;
-    color: var(--text-primary-dark);
-    font-size: var(--paragraph-small-size);
-    line-height: 1.2;
-    white-space: pre-line;
+    text-align: left;
+    padding: .5rem 1rem;
+    cursor: pointer;
+    transition: .2s background-color ease;
+}
+
+._1XCx4TIz2WkL89-bX30Uv1:hover {
+    background-color: var(--hover-primary);
 }
 
 ._1tpcJKY6D83Z80hLKLX4As {
