@@ -3,7 +3,6 @@ import React, {useState, useRef} from "react";
 import playIcon from "../assets/audioPlay_Icon.svg";
 import pauseIcon from "../assets/audioPause_Icon.svg";
 import documentIcon from "../assets/document_Icon.svg";
-import dropdownIcon from "../assets/dropdown_Icon.svg";
 
 export function FileCard(props) {
   // const [isAudioPlaying, setIsAudioPlaying] = useState(false);
@@ -18,7 +17,7 @@ export function FileCard(props) {
   }
   
   async function handleClickOnDownload() {
-    const fileID = mediaData.file_id;
+    const fileID = mediaData.file_ID;
     const filename = mediaData.file_name;
     const actionURL = `http://medialibrary.local/modules/actions.php?downloadUserFile&file_ID=${fileID}`;
     const response = await fetch(actionURL, {
@@ -36,6 +35,22 @@ export function FileCard(props) {
     }
 
     URL.revokeObjectURL(downloadURL);
+  }
+
+  async function handleClickOnDelete() {
+    const fileID = mediaData.file_ID;
+    const actionURL = `http://medialibrary.local/modules/actions.php?deleteUserFile&file_ID=${fileID}`;
+    const response = await fetch(actionURL, {
+      method: "DELETE"
+    });
+
+    const data = await response.json();
+
+    if (data.err) {
+      setNotification({type: "error", text: data.message, active: true});
+    } else {
+      setNotification({type: "message", text: data.message, active: true});
+    }
   }
 
   function getTypeSpecificMediaElement(type) {
@@ -85,7 +100,7 @@ export function FileCard(props) {
             <div className={styles.dropdown_icon}>
               <div className={styles.dropdown_menu}>
                 <div onClick={handleClickOnDownload} className={styles.dropdown_menuitem}>Скачать</div>
-                <div className={styles.dropdown_menuitem}>Удалить</div>
+                <div onClick={handleClickOnDelete} className={styles.dropdown_menuitem}>Удалить</div>
               </div>
             </div>
           </div>

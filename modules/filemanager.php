@@ -119,8 +119,17 @@ class FileManager {
 		return "other";
 	}
 
-	public function delete_user_files() {
+	public function delete_user_file(string $file_ID) {
+		$file_owner = $_SESSION['user_name'];
+		$file_deletion_query = "DELETE FROM FILES WHERE file_owner='{$file_owner}' AND file_ID='{$file_ID}'";
 
+		if (!$this->db->query($file_deletion_query)) {
+			echo json_encode(array(
+				'message'=>'Произошла ошибка при удалении файла',
+				'err'=>TRUE
+			), JSON_UNESCAPED_UNICODE);
+		}
+		exit();
 	}
 
 	public function update_user_files() {
