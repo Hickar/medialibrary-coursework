@@ -53,8 +53,7 @@ export function LoginForm() {
   return (
     <form className={styles.login_form}
           autoComplete={"off"}
-          method={"POST"}
-    >
+          method={"POST"}>
       <div className={styles.login_form_group}>
         <input id={"name"}
                type={"text"}

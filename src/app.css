@@ -16,7 +16,7 @@
     --background-dark: #282828;
     --background-panel: white;
 
-    --border-light: #AEAEAE;
+    --border-light: #D5D5D5;
     --border-dark: #535353;
 
     --accent-fade: #85C8FF;
@@ -66,7 +66,7 @@ body {
     font: inherit;
     padding: 0;
     margin: 0;
-    background-color: var(--background-light);
+    background-color: var(--background-panel);
     z-index: 0;
     /*transition: .2s padding-right ease;*/
 }

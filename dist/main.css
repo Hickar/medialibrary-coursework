@@ -15,7 +15,7 @@
     --background-dark: #282828;
     --background-panel: white;
 
-    --border-light: #AEAEAE;
+    --border-light: #D5D5D5;
     --border-dark: #535353;
 
     --accent-fade: #85C8FF;
@@ -65,7 +65,7 @@ body {
     font: inherit;
     padding: 0;
     margin: 0;
-    background-color: var(--background-light);
+    background-color: var(--background-panel);
     z-index: 0;
     /*transition: .2s padding-right ease;*/
 }
@@ -292,7 +292,7 @@ button {
   position: relative;
   width: 100%;
   height: auto;
-  background-color: #F2F2F2;
+  background-color: var(--background-panel);
   border-radius: .5rem;
   box-shadow: 0 .25rem .5rem rgba(0, 0, 0, .25);
   text-align: center;
@@ -590,7 +590,7 @@ button {
     height: auto;
     max-height: 100%;
     padding-bottom: 56.25%;
-    background-color: #939393;
+    background-color: #C6C6C6;
     cursor: pointer;
 }
 

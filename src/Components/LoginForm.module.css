@@ -2,7 +2,7 @@
   position: relative;
   width: 100%;
   height: auto;
-  background-color: #F2F2F2;
+  background-color: var(--background-panel);
   border-radius: .5rem;
   box-shadow: 0 .25rem .5rem rgba(0, 0, 0, .25);
   text-align: center;
