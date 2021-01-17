@@ -1,14 +1,18 @@
-import styles from "./FileCard.module.css";
-import React, {useState, useRef} from "react";
+import styles from "./MediaCard.module.css";
+import React, {useState, useRef, useContext} from "react";
+import {NotificationContext} from "./NotificationContext";
+import {GalleryContext} from "./GalleryContext";
 import playIcon from "../assets/audioPlay_Icon.svg";
 import pauseIcon from "../assets/audioPause_Icon.svg";
 import documentIcon from "../assets/document_Icon.svg";
 
-export function FileCard(props) {
+export function MediaCard(props) {
   // const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const mediaData = props.mediafile;
   const mediaContentElement = getTypeSpecificMediaElement(mediaData.file_type);
   const downloadLinkRef = useRef();
+  const setNotification = useContext(NotificationContext);
+  const setGalleryStatus = useContext(GalleryContext);
 
   async function handleClickOnMediaWrapper(e) {
     if (mediaData.file_type === "document" || mediaData.file_type === "other") {
@@ -49,7 +53,7 @@ export function FileCard(props) {
     if (data.err) {
       setNotification({type: "error", text: data.message, active: true});
     } else {
-      setNotification({type: "message", text: data.message, active: true});
+      setGalleryStatus({type: "reload"});
     }
   }
 

@@ -1,7 +1,7 @@
 import React, {useState, useContext} from "react";
 import {Route} from "react-router-dom";
 import {SideNavbar} from "./SideNavbar";
-import {FilesContainer} from "./FilesContainer";
+import {Gallery} from "./Gallery";
 // import {Settings} from "./Settings";
 import styles from "./Dashboard.module.css";
 
@@ -11,7 +11,7 @@ export function Dashboard() {
       <SideNavbar/>
       <div className={styles.content}>
         <Route path={"/dashboard/files"}>
-          <FilesContainer/>
+          <Gallery/>
         </Route>
         <Route path={"/dashboard/settings"}>
           {/*<Settings/>*/}

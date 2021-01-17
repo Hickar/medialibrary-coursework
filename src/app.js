@@ -1,10 +1,9 @@
-import "./app.css"
+import "./app.css";
 import React, {useState, useEffect} from "react";
-import ReactDOM from "react-dom"
+import ReactDOM from "react-dom";
 import {BrowserRouter as Router, Route, Redirect} from "react-router-dom";
 import {LoginPage} from "./Components/LoginPage";
 import {Dashboard} from "./Components/Dashboard";
-import {AuthorizationContext} from "./Components/AuthorizationContext";
 import {NotificationContext} from "./Components/NotificationContext";
 import {Notification} from "./Components/Notification";
 
@@ -28,20 +27,18 @@ function App() {
 
   return (
     <NotificationContext.Provider value={setNotificationStatus}>
-      <AuthorizationContext.Provider value={setIsAuthorized}>
-        <Notification status={notificationStatus}/>
-        <Route path={"/"} render={() => {
-          return isAuthorized ? <Redirect to={"/dashboard/files"}/> : <Redirect to={"/login"}/>
-        }}/>
-        <Route path={"/dashboard"}>
-          <Dashboard/>
-        </Route>
-        <Route path={"/login"}>
-          <LoginPage/>
-        </Route>
-      </AuthorizationContext.Provider>
+      <Notification status={notificationStatus}/>
+      <Route path={"/"} render={() => {
+        return isAuthorized ? <Redirect to={"/dashboard/files"}/> : <Redirect to={"/login"}/>;
+      }}/>
+      <Route path={"/dashboard"}>
+        <Dashboard/>
+      </Route>
+      <Route path={"/login"}>
+        <LoginPage/>
+      </Route>
     </NotificationContext.Provider>
-  )
+  );
 }
 
 if (typeof window !== undefined) {
@@ -50,5 +47,5 @@ if (typeof window !== undefined) {
       <App/>
     </Router>,
     document.getElementById("app")
-  )
+  );
 }

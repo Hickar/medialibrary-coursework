@@ -1,15 +1,19 @@
-import React, {useState, useRef, useEffect, useContext} from "react";
-import styles from "./FilesContainer.module.css";
-import {FileCard} from "./FileCard";
+import React, {useState, useRef, useEffect, useContext, useReducer} from "react";
+import styles from "./Gallery.module.css";
+import {MediaCard} from "./MediaCard";
 import {NotificationContext} from "./NotificationContext";
+import {GalleryContext} from "./GalleryContext";
 import uploadFileIcon from "../assets/uploadFile_Icon.svg";
 import {readFile} from "../api/utils";
 
-export function FilesContainer() {
+export function Gallery() {
   const setNotification = useContext(NotificationContext);
   const fileInput = useRef();
   const [userFilesFetched, setUserFilesFetched] = useState(false);
   const [userFiles, setUserFiles] = useState([]);
+  const [galleryStatus, setGalleryStatus] = useReducer(galleryReducer, {}, () => {
+    return {};
+  });
 
   function handleClickOnUploadFiles(e) {
     if (fileInput.current) {
@@ -66,6 +70,12 @@ export function FilesContainer() {
     await setUserFilesFetched(true);
   }
 
+  function galleryReducer(state, action) {
+    if (action.type === "reload") {
+      setUserFilesFetched(false);
+    }
+  }
+
   useEffect(() => {
     if (!userFilesFetched) {
       fetchUserFiles();
@@ -84,7 +94,7 @@ export function FilesContainer() {
   }, []);
 
   return (
-    <>
+    <GalleryContext.Provider value={setGalleryStatus}>
       <input ref={fileInput} className={styles.hidden} type={"file"} multiple/>
       <div className={styles.toolbar}>
         <button className={styles.toolbar_item} onClick={handleClickOnUploadFiles}>
@@ -93,9 +103,9 @@ export function FilesContainer() {
       </div>
       <div className={styles.files_wrapper}>
         {userFilesFetched ? userFiles.map((file) => {
-          return <FileCard key={file.file_ID} mediafile={file}/>;
+          return <MediaCard key={file.file_ID} mediafile={file}/>;
         }) : null}
       </div>
-    </>
+    </GalleryContext.Provider>
   );
 }

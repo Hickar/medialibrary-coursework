@@ -36,7 +36,7 @@ export function SideNavbar() {
       </div>
       <div className={styles.delimiter}/>
       <NavLink className={styles.navbar_link} activeClassName={styles.navbar_link_active} to={"/dashboard/files"}>
-        <img className={styles.navbar_link_icon} src={filesIcon} alt={"FilesContainer icon"}/>
+        <img className={styles.navbar_link_icon} src={filesIcon} alt={"Gallery icon"}/>
         <div className={styles.navbar_link_text}>Файлы</div>
       </NavLink>
       <NavLink className={styles.navbar_link} activeClassName={styles.navbar_link_active} to={"/dashboard/settings"}>

@@ -123,7 +123,12 @@ class FileManager {
 		$file_owner = $_SESSION['user_name'];
 		$file_deletion_query = "DELETE FROM FILES WHERE file_owner='{$file_owner}' AND file_ID='{$file_ID}'";
 
-		if (!$this->db->query($file_deletion_query)) {
+		if ($this->db->query($file_deletion_query)) {
+			echo json_encode(array(
+				'message'=>'',
+				'err'=>FALSE
+			), JSON_UNESCAPED_UNICODE);
+		} else {
 			echo json_encode(array(
 				'message'=>'Произошла ошибка при удалении файла',
 				'err'=>TRUE
