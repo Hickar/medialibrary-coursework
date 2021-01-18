@@ -8,7 +8,7 @@ import {NotificationContext} from "./Components/NotificationContext";
 import {Notification} from "./Components/Notification";
 
 function App() {
-  const [notificationStatus, setNotificationStatus] = useState({type: "", text: "", active: false});
+  const [notificationState, dispatchNotificationAction] = useState({type: "", text: "", active: false});
   const [isAuthorized, setIsAuthorized] = useState(fetchIsAuthorized());
 
   async function fetchIsAuthorized() {
@@ -26,8 +26,8 @@ function App() {
   }, []);
 
   return (
-    <NotificationContext.Provider value={setNotificationStatus}>
-      <Notification status={notificationStatus}/>
+    <NotificationContext.Provider value={dispatchNotificationAction}>
+      <Notification status={notificationState}/>
       <Route path={"/"} render={() => {
         return isAuthorized ? <Redirect to={"/dashboard/files"}/> : <Redirect to={"/login"}/>;
       }}/>

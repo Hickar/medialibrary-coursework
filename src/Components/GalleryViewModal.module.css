@@ -1,0 +1,121 @@
+.overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: hsla(0, 0%, 0%, .75);
+    z-index: 2000;
+    overflow: hidden;
+    text-align: center;
+}
+
+.overlay_inner {
+    position: absolute;
+    z-index: 2001;
+    width: 100%;
+    height: 100%;
+}
+
+.overlay_inner::after {
+    content: "";
+    width: 24px;
+    height: 24px;
+    background-image: url("../assets/galleryView_modal_close_button.svg");
+    background-size: 24px 24px;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    opacity: .5;
+    transition: .25s opacity ease;
+}
+
+.overlay_inner:hover::after {
+    opacity: 1;
+}
+
+.modal {
+    position: relative;
+    z-index: 2002;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    max-height: 90%;
+    max-width: 90%;
+    padding: 2rem;
+    margin: 2rem;
+    background-color: var(--background-dark);
+    border-radius: .5rem;
+    overflow: hidden;
+}
+
+.nav_button {
+    position: absolute;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url("../assets/galleryView_nav_arrow.svg");
+    top: 0;
+    width: 6rem;
+    height: 100%;
+    background-color: transparent;
+    transition: .25s background-color ease, .25s opacity ease;
+    opacity: .5;
+    cursor: pointer;
+}
+
+.nav_button:hover {
+    background-color: hsla(0, 0%, 0%, .5);
+    opacity: 1;
+}
+
+.nav_button_left {
+    left: 0;
+}
+
+.nav_button_right {
+    right: 0;
+    transform: rotate(180deg);
+}
+
+.content {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+@media screen and (max-width: 996px) {
+    .overlay_inner::after {
+        width: 20px;
+        height: 20px;
+        background-size: 20px 20px;
+        top: 12px;
+        right: 12px;
+    }
+
+    .nav_button {
+        width: 4rem;
+    }
+}
+
+@media screen and (max-width: 570px) {
+    .modal {
+        padding: 1rem;
+        margin: 2rem auto;
+    }
+
+    .overlay_inner::after {
+        width: 16px;
+        height: 16px;
+        background-size: 16px 16px;
+        top: 8px;
+        right: 8px;
+    }
+
+    .nav_button {
+        width: 2rem;
+    }
+}

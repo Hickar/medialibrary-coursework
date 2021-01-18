@@ -720,6 +720,128 @@ button {
         width: 100%;
     }
 }
+._3e1xZflPF-0veCFoKBeQd3 {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: hsla(0, 0%, 0%, .75);
+    z-index: 2000;
+    overflow: hidden;
+    text-align: center;
+}
+
+._2x983iDiJhNprH8F6jY9Rh {
+    position: absolute;
+    z-index: 2001;
+    width: 100%;
+    height: 100%;
+}
+
+._2x983iDiJhNprH8F6jY9Rh::after {
+    content: "";
+    width: 24px;
+    height: 24px;
+    background-image: url(../dist/assets/cf75d0946be0cc97dec88d218af54be7.svg);
+    background-size: 24px 24px;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    opacity: .5;
+    transition: .25s opacity ease;
+}
+
+._2x983iDiJhNprH8F6jY9Rh:hover::after {
+    opacity: 1;
+}
+
+._3WMa29YROh2eU4baXfGHLP {
+    position: relative;
+    z-index: 2002;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    max-height: 90%;
+    max-width: 90%;
+    padding: 2rem;
+    margin: 2rem;
+    background-color: var(--background-dark);
+    border-radius: .5rem;
+    overflow: hidden;
+}
+
+._3v-JXSESLZLNFU8HUUcOod {
+    position: absolute;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(../dist/assets/eb1f43b4cdbf9d2601ce746583885a68.svg);
+    top: 0;
+    width: 6rem;
+    height: 100%;
+    background-color: transparent;
+    transition: .25s background-color ease, .25s opacity ease;
+    opacity: .5;
+    cursor: pointer;
+}
+
+._3v-JXSESLZLNFU8HUUcOod:hover {
+    background-color: hsla(0, 0%, 0%, .5);
+    opacity: 1;
+}
+
+._1f-L6CxICwSJK_W1cHn-Y5 {
+    left: 0;
+}
+
+._3ohUOpUHFpbvYQ_Wfkre-a {
+    right: 0;
+    transform: rotate(180deg);
+}
+
+._33RzzDJrrQvHl0qZ1bRxE_ {
+    -o-object-fit: contain;
+       object-fit: contain;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+@media screen and (max-width: 996px) {
+    ._2x983iDiJhNprH8F6jY9Rh::after {
+        width: 20px;
+        height: 20px;
+        background-size: 20px 20px;
+        top: 12px;
+        right: 12px;
+    }
+
+    ._3v-JXSESLZLNFU8HUUcOod {
+        width: 4rem;
+    }
+}
+
+@media screen and (max-width: 570px) {
+    ._3WMa29YROh2eU4baXfGHLP {
+        padding: 1rem;
+        margin: 2rem auto;
+    }
+
+    ._2x983iDiJhNprH8F6jY9Rh::after {
+        width: 16px;
+        height: 16px;
+        background-size: 16px 16px;
+        top: 8px;
+        right: 8px;
+    }
+
+    ._3v-JXSESLZLNFU8HUUcOod {
+        width: 2rem;
+    }
+}
 ._3ONi5QPvV1iexk7-FyU-hz {
     display: flex;
     width: 100%;

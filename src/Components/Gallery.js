@@ -1,6 +1,7 @@
 import React, {useState, useRef, useEffect, useContext, useReducer} from "react";
 import styles from "./Gallery.module.css";
-import {MediaCard} from "./MediaCard";
+import MediaCard from "./MediaCard";
+import GalleryViewModal from "./GalleryViewModal";
 import {NotificationContext} from "./NotificationContext";
 import {GalleryContext} from "./GalleryContext";
 import uploadFileIcon from "../assets/uploadFile_Icon.svg";
@@ -11,11 +12,38 @@ export function Gallery() {
   const fileInput = useRef();
   const [userFilesFetched, setUserFilesFetched] = useState(false);
   const [userFiles, setUserFiles] = useState([]);
-  const [galleryStatus, setGalleryStatus] = useReducer(galleryReducer, {}, () => {
-    return {};
-  });
 
-  function handleClickOnUploadFiles(e) {
+  const galleryInitialState = {
+    isViewActive: false,
+    activeItem: null
+  };
+
+  const [galleryState, dispatchGalleryAction] = useReducer(
+    galleryReducer,
+    galleryInitialState,
+    (arg) => {
+      return arg;
+    });
+
+
+  function galleryReducer(state, action) {
+    if (action.type === "reload") {
+      setUserFilesFetched(false);
+      return {isViewActive: state.isViewActive, activeItem: state.activeItem};
+    }
+
+    if (action.type === "setActiveItem") {
+      return {isViewActive: true, activeItem: action.data};
+    }
+
+    if (action.type === "closeModal") {
+      return {isViewActive: false, activeItem: null};
+    }
+
+    return state;
+  }
+
+  function handleClickOnUploadFiles() {
     if (fileInput.current) {
       fileInput.current.click();
     }
@@ -70,11 +98,6 @@ export function Gallery() {
     await setUserFilesFetched(true);
   }
 
-  function galleryReducer(state, action) {
-    if (action.type === "reload") {
-      setUserFilesFetched(false);
-    }
-  }
 
   useEffect(() => {
     if (!userFilesFetched) {
@@ -94,7 +117,13 @@ export function Gallery() {
   }, []);
 
   return (
-    <GalleryContext.Provider value={setGalleryStatus}>
+    <GalleryContext.Provider value={dispatchGalleryAction}>
+      {
+        galleryState.isViewActive === true ?
+          <GalleryViewModal mediaItems={userFiles}
+                            mediaItemActive={galleryState.activeItem}/>
+          : null
+      }
       <input ref={fileInput} className={styles.hidden} type={"file"} multiple/>
       <div className={styles.toolbar}>
         <button className={styles.toolbar_item} onClick={handleClickOnUploadFiles}>
