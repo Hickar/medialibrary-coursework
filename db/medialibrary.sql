@@ -13,6 +13,7 @@ CREATE TABLE FILES (
     file_owner varchar(63) NOT NULL,
     file_name varchar(63) NOT NULL,
     file_URL varchar(63) NOT NULL,
+    file_thumbnail_URL varchar(63),
     file_type varchar(63) NOT NULL,
     file_ID varchar(63) NOT NULL,
     date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP

@@ -28,11 +28,11 @@ class FileManager {
 		), JSON_UNESCAPED_UNICODE);
 	}
 
-	public function get_user_file($file_ID) {
+	public function get_user_file(string $file_ID, bool $is_thumbnail = FALSE) {
 		$file_select_query = "SELECT * FROM FILES WHERE file_ID='{$file_ID}'";
 		$result = $this->db->query($file_select_query) or die($this->db->error);
 		$file_record = $result->fetch_array(MYSQLI_ASSOC);
-		$file_path = $file_record['file_URL'];
+		$file_path = $is_thumbnail ? $file_record['file_thumbnail_URL'] : $file_record['file_URL'];
 
 		if (file_exists($file_path)) {
 			$file_info = finfo_open(FILEINFO_MIME_TYPE);
@@ -89,6 +89,7 @@ class FileManager {
 		$file_type = $this->get_file_type($file_info['extension']);
 		$file_ID = sha1($file_name);
 		$file_path = $dir_path . '/' . $file_ID . '.' . $file_info['extension'];
+		$file_thumbnail_path = NULL;
 
 		if ($file['error'] == 1) {
 			echo json_encode(array(
@@ -98,11 +99,17 @@ class FileManager {
 			exit();
 		}
 
-		$file_insert_query = "INSERT INTO FILES (file_owner, file_name, file_URL, file_type, file_ID)" .
-			"VALUES ('{$file_owner}', '{$file_name}', '{$file_path}', '{$file_type}', '{$file_ID}')";
+		if (move_uploaded_file($file['tmp_name'], $file_path)) {
+			if ($file_type == "image") {
+				$file_thumbnail_path = $this->create_minimized_image($file_path, $dir_path);
+			}
 
-		if ($this->db->query($file_insert_query) && move_uploaded_file($file['tmp_name'], $file_path)) {
-			return;
+			$file_insert_query = "INSERT INTO FILES (file_owner, file_name, file_URL, file_thumbnail_URL, file_type, file_ID)" .
+				"VALUES ('{$file_owner}', '{$file_name}', '{$file_path}', '{$file_thumbnail_path}', '{$file_type}', '{$file_ID}')";
+
+			if ($this->db->query($file_insert_query)) {
+				return;
+			}
 		}
 	}
 
@@ -125,20 +132,25 @@ class FileManager {
 
 		if ($this->db->query($file_deletion_query)) {
 			echo json_encode(array(
-				'message'=>'',
-				'err'=>FALSE
+				'message' => '',
+				'err' => FALSE
 			), JSON_UNESCAPED_UNICODE);
 		} else {
 			echo json_encode(array(
-				'message'=>'Произошла ошибка при удалении файла',
-				'err'=>TRUE
+				'message' => 'Произошла ошибка при удалении файла',
+				'err' => TRUE
 			), JSON_UNESCAPED_UNICODE);
 		}
 		exit();
 	}
 
-	public function update_user_files() {
-
+	public function update_user_file(string $ID, string $key, string $value): bool {
+		$update_query = "UPDATE FILES SET $key = '{$value}' WHERE file_owner='{$_SESSION['user_name']}' AND file_ID='{$ID}';";
+		if ($this->db->query($update_query)) {
+			return TRUE;
+		} else {
+			return FALSE;
+		}
 	}
 
 	public function normalize_user_files(&$vector): array {
@@ -147,6 +159,16 @@ class FileManager {
 			foreach ($value1 as $key2 => $value2)
 				$result[$key2][$key1] = $value2;
 		return $result;
+	}
+
+	public function create_minimized_image(string $file_path, string $dir_path, string $suffix = "_min"): string {
+		$file_info = pathinfo($file_path);
+		$minimized_file_name = $file_info['filename'] . $suffix . "." . $file_info['extension'];
+		$minimized_file_path = realpath($dir_path) . "/" . $minimized_file_name;
+		$cmd = "/usr/local/bin/ffmpeg -i " . realpath($file_path) . " -vf scale=\"360:-1\" " . $minimized_file_path;
+
+		shell_exec($cmd);
+		return $dir_path . "/" . $minimized_file_name;
 	}
 }
 
