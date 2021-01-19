@@ -104,6 +104,10 @@ class FileManager {
 				$file_thumbnail_path = $this->create_minimized_image($file_path, $dir_path);
 			}
 
+			if ($file_type == "video") {
+				$file_thumbnail_path = $this->create_video_thumbnail($file_path, $dir_path);
+			}
+
 			$file_insert_query = "INSERT INTO FILES (file_owner, file_name, file_URL, file_thumbnail_URL, file_type, file_ID)" .
 				"VALUES ('{$file_owner}', '{$file_name}', '{$file_path}', '{$file_thumbnail_path}', '{$file_type}', '{$file_ID}')";
 
@@ -169,6 +173,17 @@ class FileManager {
 
 		shell_exec($cmd);
 		return $dir_path . "/" . $minimized_file_name;
+	}
+
+	public function create_video_thumbnail(string $file_path, string $dir_path, string $suffix = "_thumb"): string {
+		$file_info = pathinfo($file_path);
+		$thumbnail_name = $file_info['filename'] . $suffix . ".jpg";
+		$thumbnail_path = realpath($dir_path) . "/" . $thumbnail_name;
+		$cmd = "/usr/local/bin/ffmpeg -i " . realpath($file_path) . " -vframes 1 -an -filter:v scale=\"320:-1\" -ss 0 " .
+			$thumbnail_path;
+
+		shell_exec($cmd);
+		return $dir_path . "/" . $thumbnail_name;
 	}
 }
 
