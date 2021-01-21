@@ -805,7 +805,7 @@ button {
        object-fit: contain;
     width: 100%;
     height: 100%;
-    max-width: 100%;
+    max-width: calc(100% - 12rem);
     max-height: 100%;
 }
 
@@ -820,6 +820,10 @@ button {
 
     ._3v-JXSESLZLNFU8HUUcOod {
         width: 4rem;
+    }
+
+    ._33RzzDJrrQvHl0qZ1bRxE_ {
+        max-width: calc(100% - 8rem);;
     }
 }
 

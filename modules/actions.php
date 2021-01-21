@@ -40,7 +40,8 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['getUserFiles'])) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['getUserFile'])) {
-	$file_manager->get_user_file($_REQUEST['file_ID']);
+	$isThumbRequired = isset($_REQUEST['thumb']);
+	$file_manager->get_user_file($_REQUEST['file_ID'], $isThumbRequired);
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['downloadUserFile'])) {

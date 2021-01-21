@@ -84,13 +84,13 @@ export function Gallery() {
         continue;
       } else {
         const file_ID = file.file_ID;
-        const actionURL = `http://medialibrary.local/modules/actions.php?getUserFile&file_ID=${file_ID}`;
+        const actionURL = `http://medialibrary.local/modules/actions.php?getUserFile&file_ID=${file_ID}&thumb`;
         const response = await fetch(actionURL, {
           method: "GET"
         });
 
         const fileRaw = await response.blob();
-        file.src = await readFile(fileRaw);
+        file.thumbnail = await readFile(fileRaw);
       }
     }
 

@@ -64,7 +64,7 @@ export default function MediaCard(props) {
       case "image":
       case "video":
         return <img className={styles.thumbnail}
-                    src={mediaFile.src}
+                    src={mediaFile.thumbnail}
                     alt={"Media file thumbnail"}
                     onClick={handleClickOnMediaWrapper}/>;
       case "audio":
@@ -84,37 +84,35 @@ export default function MediaCard(props) {
   }
 
   return (
-    <React.StrictMode>
-      <div className={styles.wrapper}>
-        <a className={styles.hidden} ref={downloadLinkRef} href={""}/>
-        <div className={styles.card}>
-          <div className={styles.media_wrapper}>
-            <div
-              className={styles.link}
-              data-src={mediaFile.src}
-              data-filename={mediaFile.file_name}
-              data-id={mediaFile.file_ID}
-              data-type={mediaFile.file_type}
-              onClick={handleClickOnMediaWrapper}/>
-            {mediaContentElement}
-            {/*{isAudioPlaying === true ?*/}
-            {/*  <input type={"range"} className={styles.progress_bar} min={"0"} max={"100"} value={"0"}/>*/}
-            {/*  : null}*/}
-          </div>
-          <div className={styles.info}>
-            <div className={styles.title}>{mediaFile.file_name}</div>
-            <div className={styles.meta_row}>
-              <div className={styles.date_added}>{mediaFile.date_added}</div>
-              <div className={styles.dropdown_icon}>
-                <div className={styles.dropdown_menu}>
-                  <div onClick={handleClickOnDownload} className={styles.dropdown_menuitem}>Скачать</div>
-                  <div onClick={handleClickOnDelete} className={styles.dropdown_menuitem}>Удалить</div>
-                </div>
+    <div className={styles.wrapper}>
+      <a className={styles.hidden} ref={downloadLinkRef} href={""}/>
+      <div className={styles.card}>
+        <div className={styles.media_wrapper}>
+          <div
+            className={styles.link}
+            data-src={mediaFile.src}
+            data-filename={mediaFile.file_name}
+            data-id={mediaFile.file_ID}
+            data-type={mediaFile.file_type}
+            onClick={handleClickOnMediaWrapper}/>
+          {mediaContentElement}
+          {/*{isAudioPlaying === true ?*/}
+          {/*  <input type={"range"} className={styles.progress_bar} min={"0"} max={"100"} value={"0"}/>*/}
+          {/*  : null}*/}
+        </div>
+        <div className={styles.info}>
+          <div className={styles.title}>{mediaFile.file_name}</div>
+          <div className={styles.meta_row}>
+            <div className={styles.date_added}>{mediaFile.date_added}</div>
+            <div className={styles.dropdown_icon}>
+              <div className={styles.dropdown_menu}>
+                <div onClick={handleClickOnDownload} className={styles.dropdown_menuitem}>Скачать</div>
+                <div onClick={handleClickOnDelete} className={styles.dropdown_menuitem}>Удалить</div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </React.StrictMode>
+    </div>
   );
 }
