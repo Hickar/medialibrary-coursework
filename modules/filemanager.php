@@ -15,7 +15,12 @@ class FileManager {
 		$file_rows = array();
 
 		while ($record = $result->fetch_array(MYSQLI_ASSOC)) {
-			$file_rows[] = $record;
+			$file_rows[] = array(
+				'name'=>$record['file_name'],
+				'ID' => $record['file_ID'],
+				'type' => $record['file_type'],
+				'dateAdded'=>$record['date_added']
+			);
 		}
 
 		header('Pragma: public');
@@ -23,7 +28,7 @@ class FileManager {
 		header("Content-type: application/json");
 
 		echo json_encode(array(
-			'message' => $file_rows,
+			'data' => $file_rows,
 			'err' => FALSE
 		), JSON_UNESCAPED_UNICODE);
 	}
@@ -76,7 +81,7 @@ class FileManager {
 		}
 
 		echo json_encode(array(
-			'message' => 'Файлы были успешно загружены',
+			'data' => 'Файлы были успешно загружены',
 			'err' => FALSE
 		), JSON_UNESCAPED_UNICODE);
 		exit();
@@ -93,7 +98,7 @@ class FileManager {
 
 		if ($file['error'] == 1) {
 			echo json_encode(array(
-				'message' => 'Размер файла не должен превышать 100Мб',
+				'data' => 'Размер файла не должен превышать 100Мб',
 				'err' => TRUE
 			), JSON_UNESCAPED_UNICODE);
 			exit();
@@ -118,7 +123,7 @@ class FileManager {
 	}
 
 	public function get_file_type($extension): string {
-		$images_extensions = array("jpg", "png", "gif", "svg");
+		$images_extensions = array("jpg", "png", "gif", "svg", "jpeg");
 		$video_extensions = array("mp4", "ogg", "webm");
 		$audio_extensions = array("mp3", "ogg", "aac");
 		$document_extensions = array("txt", "pdf", "doc", "docx", "rtf");
@@ -136,12 +141,12 @@ class FileManager {
 
 		if ($this->db->query($file_deletion_query)) {
 			echo json_encode(array(
-				'message' => '',
+				'data' => '',
 				'err' => FALSE
 			), JSON_UNESCAPED_UNICODE);
 		} else {
 			echo json_encode(array(
-				'message' => 'Произошла ошибка при удалении файла',
+				'data' => 'Произошла ошибка при удалении файла',
 				'err' => TRUE
 			), JSON_UNESCAPED_UNICODE);
 		}

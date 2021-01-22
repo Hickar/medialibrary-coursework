@@ -1,7 +1,7 @@
 import React, {useState, useContext} from "react";
 import {Route} from "react-router-dom";
-import {SideNavbar} from "./SideNavbar";
-import {Gallery} from "./Gallery";
+import {SideNavbar} from "../Components/SideNavbar";
+import {Gallery} from "../Components/Gallery";
 // import {Settings} from "./Settings";
 import styles from "./Dashboard.module.css";
 

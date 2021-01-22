@@ -1,18 +1,25 @@
-import React, {useState, useEffect, useReducer, useContext, useRef} from "react";
-import {GalleryContext} from "./GalleryContext";
 import styles from "./GalleryViewModal.module.css";
-import {readFile} from "../api/utils";
+import React, {useState, useEffect, useReducer, useContext, useRef} from "react";
+import useFetch from "../Hooks/useFetch";
+import {GalleryContext} from "../Contexts/GalleryContext";
 
 export default function GalleryViewModal(props) {
-  const [items, setItems] = useState(props.mediaItems ?? []);
-  const [itemActive, setItemActive] = useState(getTypeSpecificViewableElement(props.mediaItemActive));
+  const items = props.mediaItems ?? [];
   const [itemActiveIndex, setItemActiveIndex] = useReducer(
     activeIndexReducer,
     findActiveIndex(props.mediaItemActive),
-    (arg) => { return arg });
+    (arg) => {
+      return arg;
+    });
+
+  const [data, isLoading] = useFetch(
+    `http://medialibrary.local/modules/actions.php?getUserFile&file_ID=${items[itemActiveIndex].ID}`,
+    "FILE"
+  )
+
+  const itemActive = getTypeSpecificViewableElement(items[itemActiveIndex], data);
 
   const dispatchGalleryAction = useContext(GalleryContext);
-
 
   function activeIndexReducer(state, action) {
     switch (action.type) {
@@ -30,20 +37,9 @@ export default function GalleryViewModal(props) {
   }
 
   function handleKeyDown(e) {
-    if (e.keyCode === 27) dispatchGalleryAction({type: "closeModal"});
+    if (e.keyCode === 27) dispatchGalleryAction({type: "disableMediaViewer"});
     if (e.keyCode === 37) setItemActiveIndex({type: "previous"});
     if (e.keyCode === 39) setItemActiveIndex({type: "next"});
-  }
-
-  async function fetchUserFile(ID) {
-    const actionURL = `http://medialibrary.local/modules/actions.php?getUserFile&file_ID=${ID}`
-    const response = await fetch(actionURL, {
-      method: "GET"
-    });
-
-    const fileRaw = await response.blob();
-    const file = await readFile(fileRaw);
-    return file;
   }
 
   useEffect(() => {
@@ -55,21 +51,9 @@ export default function GalleryViewModal(props) {
     };
   }, []);
 
-  useEffect(() => {
-    console.log("activeIndex useEffect()");
-    const fetchActiveItemData = async () => {
-      const activeItemID = items[itemActiveIndex].file_ID;
-      const fileData = await fetchUserFile(activeItemID);
-      const mediaElement = await getTypeSpecificViewableElement(items[itemActiveIndex], fileData);
-      setItemActive(mediaElement);
-    }
-
-    fetchActiveItemData();
-  }, [itemActiveIndex]);
-
   function getTypeSpecificViewableElement(mediaItem, mediaItemData) {
     const src = mediaItemData;
-    const type = mediaItem.file_type;
+    const type = mediaItem.type;
 
     switch (type) {
       case "image":
@@ -83,7 +67,7 @@ export default function GalleryViewModal(props) {
 
   function findActiveIndex(activeItem) {
     for (let i = 0; i < props.mediaItems.length; i++) {
-      if (activeItem.file_ID === props.mediaItems[i].file_ID) return i;
+      if (activeItem.ID === props.mediaItems[i].ID) return i;
     }
     return -1;
   }
@@ -91,12 +75,12 @@ export default function GalleryViewModal(props) {
   return (
     <div className={styles.overlay}>
       <div onClick={() => {
-        dispatchGalleryAction({type: "closeModal"});
+        dispatchGalleryAction({type: "disableMediaViewer"});
       }} className={styles.overlay_inner}/>
       <div className={styles.modal}>
         <div onClick={() => setItemActiveIndex({type: "previous"})}
              className={styles.nav_button + " " + styles.nav_button_left}/>
-        {itemActive}
+        {isLoading ? null : itemActive}
         <div onClick={() => setItemActiveIndex({type: "next"})}
              className={styles.nav_button + " " + styles.nav_button_right}/>
       </div>

@@ -2,7 +2,7 @@ import React, {useContext} from "react";
 import styles from "./SideNavbar.module.css";
 import {useHistory} from "react-router";
 import {NavLink} from "react-router-dom";
-import {NotificationContext} from "./NotificationContext";
+import {NotificationContext} from "../Contexts/NotificationContext";
 import profileIcon from "../assets/profile_Icon.svg";
 import filesIcon from "../assets/files_Icon.svg";
 import settingsIcon from "../assets/settings_Icon.svg";

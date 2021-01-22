@@ -1,6 +1,6 @@
 import React, {useContext, useState, useEffect} from "react";
 import styles from "./Notification.module.css";
-import {NotificationContext} from "./NotificationContext";
+import {NotificationContext} from "../Contexts/NotificationContext";
 
 export function Notification(props) {
   const setNotification = useContext(NotificationContext);

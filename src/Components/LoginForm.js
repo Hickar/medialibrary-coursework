@@ -1,7 +1,7 @@
 import React, {useState, useContext} from "react";
 import styles from "./LoginForm.module.css";
 import {useHistory} from "react-router";
-import {NotificationContext} from "./NotificationContext";
+import {NotificationContext} from "../Contexts/NotificationContext";
 
 export function LoginForm() {
   const [isRegistrationActive, setIsRegistrationActive] = useState(false);
@@ -37,7 +37,7 @@ export function LoginForm() {
       history.push("/");
     }
 
-    setNotification({type: "message", text: data.message, active: true});
+    setNotification({type: "message", text: data.data, active: true});
   }
 
   function handleInputChange(e) {

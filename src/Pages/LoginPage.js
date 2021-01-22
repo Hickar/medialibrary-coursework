@@ -1,8 +1,8 @@
 import React from "react";
 import styles from "./LoginPage.module.css";
-import Section from "./Section";
+import Section from "../Components/Section";
 import background_image from "../assets/login_background.svg";
-import {LoginForm} from "./LoginForm";
+import {LoginForm} from "../Components/LoginForm";
 
 export function LoginPage() {
 	return (

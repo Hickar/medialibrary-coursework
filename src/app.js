@@ -1,10 +1,10 @@
 import "./app.css";
-import React, {useState, useEffect} from "react";
+import React, {useState, useLayoutEffect} from "react";
 import ReactDOM from "react-dom";
 import {BrowserRouter as Router, Route, Redirect} from "react-router-dom";
-import {LoginPage} from "./Components/LoginPage";
-import {Dashboard} from "./Components/Dashboard";
-import {NotificationContext} from "./Components/NotificationContext";
+import {LoginPage} from "./Pages/LoginPage";
+import {Dashboard} from "./Pages/Dashboard";
+import {NotificationContext} from "./Contexts/NotificationContext";
 import {Notification} from "./Components/Notification";
 
 function App() {
@@ -18,10 +18,10 @@ function App() {
 
     const data = await response.json();
 
-    setIsAuthorized(data.message === true);
+    setIsAuthorized(data.data === true);
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setIsAuthorized(fetchIsAuthorized());
   }, []);
 

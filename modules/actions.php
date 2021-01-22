@@ -1,10 +1,10 @@
 <?php
 require_once("database.php");
-require_once("authorization.php");
+require_once("auth.php");
 require_once("filemanager.php");
 session_start();
 
-$auth_manager = new Authorization($db);
+$auth_manager = new Auth($db);
 $file_manager = new FileManager($db);
 $user_data = json_decode(file_get_contents('php://input'), TRUE);
 
@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['isAuthorized'])) {
 		setcookie('user_name', $_SESSION['user_name'], time() + 8600, '/');
 	}
 	echo json_encode(array(
-		'message' => $auth_manager->isAuthorized(),
+		'data' => $auth_manager->isAuthorized(),
 		'err' => FALSE
 	), JSON_UNESCAPED_UNICODE);
 }
