@@ -10,9 +10,8 @@ import useFetch from "../Hooks/useFetch";
 export function Gallery() {
 	const setNotification = useContext(NotificationContext);
 	const fileInput = useRef();
-	const [userData, isLoading, fetchData] = useFetch(
-		"http://medialibrary.local/modules/actions.php?getUserFiles"
-	);
+	const [query, setQuery] = useState("http://medialibrary.local/modules/actions.php?getUserFiles");
+	const [userData, isLoading, doFetch] = useFetch(query);
 
 	const galleryInitialState = {
 		isViewActive: false,
@@ -30,7 +29,8 @@ export function Gallery() {
 	function galleryReducer(state, action) {
 		switch (action.type) {
 			case "reload":
-				fetchData("http://medialibrary.local/modules/actions.php?getUserFiles");
+				setQuery("http://medialibrary.local/modules/actions.php?getUserFiles&");
+				doFetch(query);
 				return state;
 
 			case "enableMediaViewer":
@@ -88,7 +88,7 @@ export function Gallery() {
 				fileInput.current.removeEventListener("change", uploadFiles);
 			}
 		};
-	}, []);
+	}, [isLoading]);
 
 	return (
 		<GalleryContext.Provider value={dispatchGalleryAction}>

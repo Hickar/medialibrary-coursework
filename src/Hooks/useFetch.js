@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import {readFile} from "../api/utils";
 
 export default function UseFetch(initialURL, outputType = "") {
-	const [URL, setURL] = useState(initialURL);
+	const [URL, setURL] = useState(initialURL)
 	const [isLoading, setIsLoading] = useState(true);
 	const [data, setData] = useState([]);
 
@@ -11,7 +11,7 @@ export default function UseFetch(initialURL, outputType = "") {
 			setIsLoading(true);
 
 			let responseData;
-			const response = await fetch(initialURL, {
+			const response = await fetch(URL, {
 				method: "GET"
 			});
 
@@ -34,7 +34,7 @@ export default function UseFetch(initialURL, outputType = "") {
 		}
 
 		fetchData();
-	}, [initialURL]);
+	}, [URL]);
 
 	return [data, isLoading, setURL];
 }
