@@ -1,5 +1,6 @@
 const webpack = require("webpack");
 const path = require("path");
+// const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 let config = {
@@ -15,7 +16,12 @@ let config = {
 		publicPath: "/",
 		contentBase: path.join(__dirname),
 		compress: true,
-		writeToDisk: true
+		writeToDisk: true,
+		// headers: {
+		// 	"Access-Control-Allow-Origin": "*",
+		// 	"Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+		// 	"Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
+		// }
 	},
 	resolve: {
 		extensions: [".js", ".jsx", ".json", ".ts", ".tsx"]
@@ -70,7 +76,13 @@ let config = {
 		myApp: "myApp"
 	},
 	plugins: [new MiniCssExtractPlugin()]
-
+	// plugins: [
+	// 	new HtmlWebpackPlugin({
+	// 		title: "Hickarium",
+	// 		filename: "index.html",
+	// 		template: "src/index.html"
+	// 	}),
+	// 	new MiniCssExtractPlugin()]
 };
 
 if (process.env.NODE_ENV === "production") {

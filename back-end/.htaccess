@@ -2,6 +2,8 @@
     Header unset Cache-Control
 </FilesMatch>
 
+Header set Access-Control-Allow-Origin "*"
+
 Redirect /login /
 Redirect /dashboard /
 Redirect /files /
