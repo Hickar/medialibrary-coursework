@@ -17,11 +17,10 @@ export default function MediaCard(props) {
 		`http://medialibrary.local/modules/actions.php?getUserFile&file_ID=${mediaFile.ID}&thumb`,
 		"FILE"
 	)
-	const thumbnail = getTypeSpecificThumbnail(mediaFile.type, data);
 
 	async function handleClickOnMediaWrapper() {
 		if (mediaFile.type === "document" || mediaFile.type === "other") {
-			handleClickOnDownload();
+			await handleClickOnDownload();
 			return;
 		}
 
@@ -116,7 +115,7 @@ export default function MediaCard(props) {
 						data-id={mediaFile.ID}
 						data-type={mediaFile.type}
 						onClick={handleClickOnMediaWrapper}/>
-					{isLoading ? null : thumbnail}
+					{isLoading ? null : getTypeSpecificThumbnail(mediaFile.type, data)}
 					{isAudioPlaying ?
 						<input type={"range"} className={styles.progress_bar} min={"0"} max={"100"} value={"0"}/>
 						: null}

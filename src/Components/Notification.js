@@ -2,7 +2,7 @@ import React, {useContext, useState, useEffect} from "react";
 import styles from "./Notification.module.css";
 import {NotificationContext} from "../Contexts/NotificationContext";
 
-export function Notification(props) {
+export default function Notification(props) {
   const setNotification = useContext(NotificationContext);
   const {type: type, text: text, active: active} = props.status;
   const visibilityClass = active ? styles.show : styles.hidden;

@@ -1,51 +1,52 @@
 import "./app.css";
-import React, {useState, useLayoutEffect} from "react";
+import React, {useState, useEffect} from "react";
 import ReactDOM from "react-dom";
 import {BrowserRouter as Router, Route, Redirect} from "react-router-dom";
-import {LoginPage} from "./Pages/LoginPage";
-import {Dashboard} from "./Pages/Dashboard";
+import LoginPage from "./Pages/LoginPage";
+import Dashboard from "./Pages/Dashboard";
+import useFetch from "./Hooks/useFetch";
 import {NotificationContext} from "./Contexts/NotificationContext";
-import {Notification} from "./Components/Notification";
+import {AuthContext} from "./Contexts/AuthContext";
+import Notification from "./Components/Notification";
 
 function App() {
-  const [notificationState, dispatchNotificationAction] = useState({type: "", text: "", active: false});
-  const [isAuthorized, setIsAuthorized] = useState(fetchIsAuthorized());
+	const [notificationState, dispatchNotificationAction] = useState({type: "", text: "", active: false});
 
-  async function fetchIsAuthorized() {
-    const response = await fetch("http://medialibrary.local/modules/actions.php?isAuthorized", {
-      method: "GET"
-    });
+	const [authQuery, setAuthQuery] = useState("http://medialibrary.local/modules/actions.php?isAuthed");
+	const [authState, isLoading, doFetch] = useFetch(authQuery);
 
-    const data = await response.json();
+	useEffect(() => {
+		doFetch(authQuery);
+	}, [authQuery]);
 
-    setIsAuthorized(data.data === true);
-  }
-
-  useLayoutEffect(() => {
-    setIsAuthorized(fetchIsAuthorized());
-  }, []);
-
-  return (
-    <NotificationContext.Provider value={dispatchNotificationAction}>
-      <Notification status={notificationState}/>
-      <Route path={"/"} render={() => {
-        return isAuthorized ? <Redirect to={"/dashboard/files"}/> : <Redirect to={"/login"}/>;
-      }}/>
-      <Route path={"/dashboard"}>
-        <Dashboard/>
-      </Route>
-      <Route path={"/login"}>
-        <LoginPage/>
-      </Route>
-    </NotificationContext.Provider>
-  );
+	return (
+		<AuthContext.Provider value={setAuthQuery}>
+			<NotificationContext.Provider value={dispatchNotificationAction}>
+				<Notification status={notificationState}/>
+				<Route path={"/"}>
+					{isLoading ?
+						null :
+						authState.data ?
+							<Redirect to={"/dashboard/files"}/> :
+							<Redirect to={"/login"}/>
+					}
+				</Route>
+				<Route path={"/dashboard"}>
+					<Dashboard/>
+				</Route>
+				<Route path={"/login"}>
+					<LoginPage/>
+				</Route>
+			</NotificationContext.Provider>
+		</AuthContext.Provider>
+	);
 }
 
 if (typeof window !== undefined) {
-  ReactDOM.render(
-    <Router>
-      <App/>
-    </Router>,
-    document.getElementById("app")
-  );
+	ReactDOM.render(
+		<Router>
+			<App/>
+		</Router>,
+		document.getElementById("app")
+	);
 }

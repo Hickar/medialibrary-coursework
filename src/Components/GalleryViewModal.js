@@ -1,45 +1,62 @@
 import styles from "./GalleryViewModal.module.css";
-import React, {useState, useEffect, useReducer, useContext, useRef} from "react";
+import React, {useState, useEffect, useReducer, useContext} from "react";
 import useFetch from "../Hooks/useFetch";
 import {GalleryContext} from "../Contexts/GalleryContext";
+import {NotificationContext} from "../Contexts/NotificationContext";
 
 export default function GalleryViewModal(props) {
-  const items = props.mediaItems ?? [];
-  const [itemActiveIndex, setItemActiveIndex] = useReducer(
-    activeIndexReducer,
-    findActiveIndex(props.mediaItemActive),
+  const initialState = {
+    items: props.mediaItems ?? [],
+    itemActive: props.mediaItemActive ?? {},
+    itemActiveIndex: findActiveIndex(props.mediaItemActive) ?? 0
+  };
+  const [state, dispatch] = useReducer(
+    itemsReducer,
+    initialState,
     (arg) => {
       return arg;
     });
 
-  const [data, isLoading] = useFetch(
-    `http://medialibrary.local/modules/actions.php?getUserFile&file_ID=${items[itemActiveIndex].ID}`,
+  const [query, setQuery] = useState(
+    "http://medialibrary.local/modules/actions.php?getUserFile&file_ID=" + props.mediaItemActive.ID
+  );
+  const [data, isLoading, doFetch] = useFetch(
+    query,
     "FILE"
-  )
-
-  const itemActive = getTypeSpecificViewableElement(items[itemActiveIndex], data);
+  );
 
   const dispatchGalleryAction = useContext(GalleryContext);
+  const dispatchNotificationAction = useContext(NotificationContext);
 
-  function activeIndexReducer(state, action) {
+  function itemsReducer(state, action) {
+    let newIndex = state.itemActiveIndex;
+
     switch (action.type) {
       case "previous":
-        if (state === 0) state = items.length - 1;
-        else --state;
+        state.itemActiveIndex === 0 ?
+          newIndex = state.items.length - 1 :
+          newIndex--;
         break;
       case "next":
-        if (state === items.length - 1) state = 0;
-        else ++state;
+        state.itemActiveIndex === state.items.length - 1 ?
+          newIndex = 0 :
+          newIndex++;
         break;
+      default:
+        return state;
     }
 
-    return state;
+    return {
+      ...state,
+      itemActive: state.items[newIndex],
+      itemActiveIndex: newIndex
+    }
   }
 
   function handleKeyDown(e) {
     if (e.keyCode === 27) dispatchGalleryAction({type: "disableMediaViewer"});
-    if (e.keyCode === 37) setItemActiveIndex({type: "previous"});
-    if (e.keyCode === 39) setItemActiveIndex({type: "next"});
+    if (e.keyCode === 37) dispatch({type: "previous"});
+    if (e.keyCode === 39) dispatch({type: "next"});
   }
 
   useEffect(() => {
@@ -51,16 +68,26 @@ export default function GalleryViewModal(props) {
     };
   }, []);
 
-  function getTypeSpecificViewableElement(mediaItem, mediaItemData) {
-    const src = mediaItemData;
-    const type = mediaItem.type;
+  useEffect(() => {
+    setQuery(`http://medialibrary.local/modules/actions.php?getUserFile&file_ID=${state.itemActive.ID}`);
+  }, [state]);
 
+  useEffect(() => {
+    doFetch(query);
+  }, [query]);
+
+  function getTypeSpecificViewableElement(type, data) {
     switch (type) {
       case "image":
-        return <img className={styles.content} src={src} alt={"Photo"}/>;
+        return <img className={styles.content} src={data} alt={"Photo"}/>;
       case "video":
-        return <video className={styles.content} src={src} controls/>;
+        return <video className={styles.content} src={data} controls/>;
       default:
+        dispatchNotificationAction({
+          type: "error",
+          text: "Воспроизведение медиафайла данного формата не поддерживается медиа-проигрываетелем",
+          active: true
+        });
         return null;
     }
   }
@@ -78,10 +105,10 @@ export default function GalleryViewModal(props) {
         dispatchGalleryAction({type: "disableMediaViewer"});
       }} className={styles.overlay_inner}/>
       <div className={styles.modal}>
-        <div onClick={() => setItemActiveIndex({type: "previous"})}
+        <div onClick={() => dispatch({type: "previous"})}
              className={styles.nav_button + " " + styles.nav_button_left}/>
-        {isLoading ? null : itemActive}
-        <div onClick={() => setItemActiveIndex({type: "next"})}
+        {isLoading ? null : getTypeSpecificViewableElement(state.itemActive.type, data)}
+        <div onClick={() => dispatch({type: "next"})}
              className={styles.nav_button + " " + styles.nav_button_right}/>
       </div>
     </div>

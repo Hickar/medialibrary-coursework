@@ -3,6 +3,7 @@ import styles from "./SideNavbar.module.css";
 import {useHistory} from "react-router";
 import {NavLink} from "react-router-dom";
 import {NotificationContext} from "../Contexts/NotificationContext";
+import {AuthContext} from "../Contexts/AuthContext";
 import profileIcon from "../assets/profile_Icon.svg";
 import filesIcon from "../assets/files_Icon.svg";
 import settingsIcon from "../assets/settings_Icon.svg";
@@ -10,9 +11,10 @@ import aboutIcon from "../assets/about_Icon.svg";
 import logoutIcon from "../assets/logout_Icon.svg";
 import {getCookie} from "../api/utils";
 
-export function SideNavbar() {
+export default function SideNavbar() {
   const history = useHistory();
   const setNotification = useContext(NotificationContext);
+  const setAuthQuery = useContext(AuthContext);
   const username = getCookie("user_name");
 
   async function handleLogout() {
@@ -23,6 +25,7 @@ export function SideNavbar() {
     const data = await response.json();
 
     if (!data.err) {
+      setAuthQuery("http://medialibrary.local/modules/actions.php?isAuthed ");
       setNotification({type: "message", text: "Вы вышли из учётной записи", active: true});
       history.push("/");
     }

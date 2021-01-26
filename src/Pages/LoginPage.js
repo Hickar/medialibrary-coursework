@@ -2,9 +2,9 @@ import React from "react";
 import styles from "./LoginPage.module.css";
 import Section from "../Components/Section";
 import background_image from "../assets/login_background.svg";
-import {LoginForm} from "../Components/LoginForm";
+import LoginForm from "../Components/LoginForm";
 
-export function LoginPage() {
+export default function LoginPage() {
 	return (
 		<Section>
 			<img className={styles.login_background} src={background_image} alt={"Background image"}/>
