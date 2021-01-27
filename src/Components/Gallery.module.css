@@ -1,21 +1,27 @@
 .files_wrapper {
+    position: relative;
+    top: 48px;
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     flex-flow: row wrap;
     width: 100%;
+    padding: 0 0 3rem 0;
     margin: 1rem 0;
 }
 
 .toolbar {
+    position: fixed;
     display: flex;
     justify-content: flex-end;
     align-items: center;
     flex-flow: row nowrap;
-    width: 100%;
+    width: calc(100% - 250px);
     height: 48px;
     padding: 0 1rem;
     border-bottom: 1px solid var(--border-light);
+    background-color: var(--background-panel);
+    z-index: 1000;
 }
 
 .toolbar_item {

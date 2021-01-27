@@ -2,119 +2,177 @@ import React, {useState, useRef, useEffect, useContext, useReducer} from "react"
 import styles from "./Gallery.module.css";
 import MediaCard from "./MediaCard";
 import GalleryViewModal from "./GalleryViewModal";
+import AudioPlayer from "./AudioPlayer";
 import {NotificationContext} from "../Contexts/NotificationContext";
 import {GalleryContext} from "../Contexts/GalleryContext";
 import uploadFileIcon from "../assets/uploadFile_Icon.svg";
 import useFetch from "../Hooks/useFetch";
 
 export default function Gallery() {
-  const setNotification = useContext(NotificationContext);
-  const fileInput = useRef();
-  const [query, setQuery] = useState("http://medialibrary.local/modules/actions.php?getUserFiles");
-  const [userData, isLoading, doFetch] = useFetch(query);
+	const setNotification = useContext(NotificationContext);
+	const fileInput = useRef();
+	const [query, setQuery] = useState("http://medialibrary.local/modules/actions.php?getUserFiles");
+	const [userData, isLoading, doFetch] = useFetch(query);
 
-  const galleryInitialState = {
-    isViewActive: false,
-    isAudioActive: false,
-    activeItem: null
-  };
+	const galleryInitialState = {
+		isViewActive: false,
+		isAudioActive: false,
+		activeItem: null,
+		audioCurrentTime: 0,
+		audioDuration: 0,
+		audioClickedTime: 0
+	};
 
-  const [galleryState, dispatchGalleryAction] = useReducer(
-    galleryReducer,
-    galleryInitialState,
-    (arg) => {
-      return arg;
-    });
+	const [galleryState, dispatchGalleryAction] = useReducer(
+		galleryReducer,
+		galleryInitialState,
+		(arg) => {
+			return arg;
+		});
 
-  function galleryReducer(state, action) {
-    switch (action.type) {
-      case "reload":
-        setQuery(query + " ");
-        return state;
+	function galleryReducer(state, action) {
+		switch (action.type) {
+			case "reload":
+				setQuery(query + " ");
+				return state;
 
-      case "enableMediaViewer":
-        return {...state, isViewActive: true, activeItem: action.payload};
+			case "enableMediaViewer":
+				return {...state, isViewActive: true, activeItem: action.payload};
 
-      case "disableMediaViewer":
-        return {...state, isViewActive: false, activeItem: null};
+			case "disableMediaViewer":
+				return {...state, isViewActive: false, activeItem: null};
 
-      case "enableAudioPlayer":
-        return {...state, isAudioActive: true, activeItem: action.payload};
+			case "toggleAudioPlayer":
+				if (state.isAudioActive && state.activeItem === action.payload) {
+					return {
+						...state,
+						isAudioActive: false,
+						activeItem: null
+					};
+				} else if (state.isAudioActive && state.activeItem !== action.payload) {
+					return {
+						...state,
+						activeItem: action.payload
+					};
+				} else {
+					return {
+						...state,
+						isAudioActive: true,
+						activeItem: action.payload
+					};
+				}
 
-      case "disableAudioPlayer":
-        return {...state, isAudioActive: false};
+			case "setAudioCurrentTime":
+				return {
+					...state,
+					audioCurrentTime:
+					action.payload
+				};
 
-      default:
-        return state;
-    }
-  }
+			case "setAudioDuration":
+				return {
+					...state,
+					audioDuration: action.payload
+				};
 
-  function handleClickOnUploadFiles() {
-    if (fileInput.current) {
-      fileInput.current.click();
-    }
-  }
+			case "setAudioClickedTime":
+				return {
+					...state,
+					audioCurrentTime: action.payload,
+					audioClickedTime: action.payload
+				};
 
-  async function uploadFiles(e) {
-    const files = e.target.files ?? e.dataTransfer.files;
-    const formData = new FormData();
+			default:
+				return state;
+		}
+	}
 
-    for (const file of files) {
-      formData.append("files[]", file, file.name);
-    }
+	function handleClickOnUploadFiles() {
+		if (fileInput.current) {
+			fileInput.current.click();
+		}
+	}
 
-    const response = await fetch("http://medialibrary.local/modules/actions.php?uploadFiles", {
-      body: formData,
-      method: "POST"
-    });
+	async function uploadFiles(e) {
+		const files = e.target.files ?? e.dataTransfer.files;
+		const formData = new FormData();
 
-    const data = await response.json();
+		for (const file of files) {
+			formData.append("files[]", file, file.name);
+		}
 
-    if (!data.err) {
-      setNotification({type: "message", text: data.data, active: true});
-      dispatchGalleryAction({type: "reload"});
-    } else {
-      setNotification({type: "error", text: data.data, active: true});
-    }
-  }
+		const response = await fetch("http://medialibrary.local/modules/actions.php?uploadFiles", {
+			body: formData,
+			method: "POST"
+		});
 
-  useEffect(() => {
-    doFetch(query);
-  }, [query]);
+		const data = await response.json();
 
-  useEffect(() => {
-    if (fileInput.current) {
-      fileInput.current.addEventListener("change", uploadFiles);
-    }
-    return () => {
-      if (fileInput.current) {
-        fileInput.current.removeEventListener("change", uploadFiles);
-      }
-    };
-  }, [isLoading]);
+		if (!data.err) {
+			setNotification({type: "message", text: data.data, active: true});
+			dispatchGalleryAction({type: "reload"});
+		} else {
+			setNotification({type: "error", text: data.data, active: true});
+		}
+	}
 
-  return (
-    <GalleryContext.Provider value={dispatchGalleryAction}>
-      {
-        galleryState.isViewActive === true ?
-          <GalleryViewModal
-            mediaItems={userData.data.filter(file =>
-              file.type === "image" || file.type === "video"
-            )}
-            mediaItemActive={galleryState.activeItem}/>
-          : null
-      }
-      <input ref={fileInput} className={styles.hidden} type={"file"} multiple/>
-      <div className={styles.toolbar}>
-        <button className={styles.toolbar_item} onClick={handleClickOnUploadFiles}>
-          <img className={styles.toolbar_item_icon} src={uploadFileIcon} alt={"File upload button"}/>
-        </button>
-      </div>
-      <div className={styles.files_wrapper}>
-        {userData && !isLoading ? userData.data.map((file) => {
-          return <MediaCard key={file.ID} mediafile={file}/>;
-        }) : null}
-      </div>
-    </GalleryContext.Provider>
-  );
+	useEffect(() => {
+		doFetch(query);
+	}, [query]);
+
+	useEffect(() => {
+		if (fileInput.current) {
+			fileInput.current.addEventListener("change", uploadFiles);
+		}
+		return () => {
+			if (fileInput.current) {
+				fileInput.current.removeEventListener("change", uploadFiles);
+			}
+		};
+	}, [isLoading]);
+
+	return (
+		<GalleryContext.Provider value={[galleryState, dispatchGalleryAction]}>
+			{
+				galleryState.isViewActive === true ?
+					<GalleryViewModal
+						mediaItems={userData.data.filter(file =>
+							file.type === "image" || file.type === "video"
+						)}
+						mediaItemActive={galleryState.activeItem}/>
+					: null
+			}
+			<input ref={fileInput} className={styles.hidden} type={"file"} multiple/>
+			<div className={styles.toolbar}>
+				<button className={styles.toolbar_item} onClick={handleClickOnUploadFiles}>
+					<img className={styles.toolbar_item_icon} src={uploadFileIcon} alt={"File upload button"}/>
+				</button>
+			</div>
+			<div className={styles.files_wrapper}>
+				{userData && galleryState.isAudioActive ?
+					<AudioPlayer
+						mediaItemActive={galleryState.activeItem}
+						isActive={galleryState.isAudioActive}
+					/> :
+					null
+				}
+				{userData && !isLoading ? userData.data.map((file) => {
+					if (galleryState.activeItem && file.ID === galleryState.activeItem.ID && file.type === "audio") {
+						return <MediaCard
+							key={file.ID}
+							mediafile={file}
+							isAudioPlaying={galleryState.activeItem.ID === file.ID}
+							currentTime={galleryState.audioCurrentTime}
+							duration={galleryState.audioDuration}
+						/>;
+					} else {
+						return <MediaCard
+							key={file.ID}
+							mediafile={file}
+						/>
+					}
+				}) : null}
+			</div>
+		</GalleryContext.Provider>
+	);
 }

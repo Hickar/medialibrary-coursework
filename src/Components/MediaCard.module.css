@@ -146,6 +146,7 @@
     background-color: var(--accent-primary);
     height: 4px;
     z-index: 30;
+    cursor: pointer;
 }
 
 .progress_bar::-moz-range-thumb {

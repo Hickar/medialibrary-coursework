@@ -1,3 +1,3 @@
 import React from "react";
 
-export const GalleryContext = React.createContext(() => {});
+export const GalleryContext = React.createContext([{}, () => {}]);

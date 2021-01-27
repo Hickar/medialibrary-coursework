@@ -25,7 +25,7 @@ export default function GalleryViewModal(props) {
     "FILE"
   );
 
-  const dispatchGalleryAction = useContext(GalleryContext);
+  const [_, dispatchGalleryAction] = useContext(GalleryContext);
   const dispatchNotificationAction = useContext(NotificationContext);
 
   function itemsReducer(state, action) {

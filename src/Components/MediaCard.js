@@ -8,15 +8,15 @@ import pauseIcon from "../assets/audioPause_Icon.svg";
 import documentIcon from "../assets/document_Icon.svg";
 
 export default function MediaCard(props) {
-	const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 	const mediaFile = props.mediafile;
 	const downloadLinkRef = useRef();
-	const dispatchNotificationAction = useContext(NotificationContext);
-	const dispatchGalleryAction = useContext(GalleryContext);
+	const isAudioPlaying = props.isAudioPlaying ?? false;
 	const [data, isLoading] = useFetch(
 		`http://medialibrary.local/modules/actions.php?getUserFile&file_ID=${mediaFile.ID}&thumb`,
 		"FILE"
 	)
+	const dispatchNotificationAction = useContext(NotificationContext);
+	const [_, dispatchGalleryAction] = useContext(GalleryContext);
 
 	async function handleClickOnMediaWrapper() {
 		if (mediaFile.type === "document" || mediaFile.type === "other") {
@@ -30,21 +30,14 @@ export default function MediaCard(props) {
 		}
 
 		if (mediaFile.type === "audio") {
-			if (!isAudioPlaying) {
-				dispatchGalleryAction({type: "enableAudioPlayer", payload: mediaFile});
-			} else {
-				dispatchGalleryAction({type: "disableAudioPlayer"});
-			}
-
-			setIsAudioPlaying(!isAudioPlaying)
+			dispatchGalleryAction({type: "toggleAudioPlayer", payload: isAudioPlaying ? null : mediaFile});
 			return;
 		}
 	}
 
 	async function handleClickOnDownload() {
-		const fileID = mediaFile.ID;
 		const filename = mediaFile.name;
-		const actionURL = `http://medialibrary.local/modules/actions.php?downloadUserFile&file_ID=${fileID}`;
+		const actionURL = `http://medialibrary.local/modules/actions.php?downloadUserFile&file_ID=${mediaFile.ID}`;
 		const response = await fetch(actionURL, {
 			method: "GET"
 		});
@@ -63,8 +56,7 @@ export default function MediaCard(props) {
 	}
 
 	async function handleClickOnDelete() {
-		const fileID = mediaFile.ID;
-		const actionURL = `http://medialibrary.local/modules/actions.php?deleteUserFile&file_ID=${fileID}`;
+		const actionURL = `http://medialibrary.local/modules/actions.php?deleteUserFile&file_ID=${mediaFile.ID}`;
 		const response = await fetch(actionURL, {
 			method: "DELETE"
 		});
@@ -76,6 +68,10 @@ export default function MediaCard(props) {
 		} else {
 			dispatchGalleryAction({type: "reload"});
 		}
+	}
+
+	function handleClickOnTimeTrack(e) {
+		dispatchGalleryAction({type: "setAudioClickedTime", payload: e.target.value})
 	}
 
 	function getTypeSpecificThumbnail(type, data) {
@@ -110,14 +106,17 @@ export default function MediaCard(props) {
 				<div className={styles.media_wrapper}>
 					<div
 						className={styles.link}
-						data-src={mediaFile.src}
-						data-filename={mediaFile.name}
-						data-id={mediaFile.ID}
-						data-type={mediaFile.type}
 						onClick={handleClickOnMediaWrapper}/>
 					{isLoading ? null : getTypeSpecificThumbnail(mediaFile.type, data)}
 					{isAudioPlaying ?
-						<input type={"range"} className={styles.progress_bar} min={"0"} max={"100"} value={"0"}/>
+						<input type={"range"}
+									 className={styles.progress_bar}
+									 min={"0"}
+									 max={props.duration}
+									 defaultValue={props.currentTime}
+									 value={props.currentTime}
+									 onChange={handleClickOnTimeTrack}
+						/>
 						: null}
 				</div>
 				<div className={styles.info}>
