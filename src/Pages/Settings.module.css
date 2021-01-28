@@ -1,0 +1,63 @@
+.wrapper {
+    width: 100%;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.settings_group {
+    padding: 1rem 1rem 2rem 1rem;
+}
+
+.settings_group_heading {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary-dark);
+    padding: 0 0 1rem 0;
+}
+
+.settings_group_input {
+    display: block;
+    max-width: 250px;
+    height: 30px;
+    font-size: 14px;
+    color: var(--text-label-light);
+    border: none;
+    outline: none;
+    padding: .5rem 0;
+    margin: 0 0 1rem 0;
+    background-color: transparent;
+    border-bottom: 2px solid var(--border-light);
+    transition: .2s border ease;
+}
+
+.settings_group_input:focus {
+    outline: none;
+    border-bottom: 2px solid var(--accent-primary);
+}
+
+.settings_group_input:required:invalid {
+    box-shadow: none !important;
+}
+
+.settings_group_label {
+    position: absolute;
+    left: 0;
+    top: 16px;
+    pointer-events: none;
+    transition: .2s all ease;
+}
+
+.settings_group_input::placeholder {
+    font-size: 14px;
+    color: var(--text-label-light);
+}
+
+.settings_group_button {
+    background-color: var(--accent-primary);
+    padding: .5rem 1rem;
+    color: white;
+    font-size: 14px;
+    border: none;
+    border-radius: .25rem;
+    margin: 0;
+}

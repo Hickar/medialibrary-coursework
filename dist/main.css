@@ -456,6 +456,7 @@ button {
     align-items: baseline;
     flex-flow: row wrap;
     width: 100%;
+    height: 100%;
     padding: 0 0 3rem 0;
     margin: 1rem 0;
 }
@@ -506,10 +507,10 @@ button {
 
 ._1P9pFB5GaBND7fazQDctcZ {
     background-color: var(--background-panel);
+    border: 1px solid var(--border-light);
     border-radius: .5rem;
     display: flex;
     flex-flow: column nowrap;
-    box-shadow: 0 .25rem .5rem rgba(0, 0, 0, .25);
     overflow: hidden;
 }
 
@@ -858,16 +859,22 @@ button {
     }
 }
 ._3Afr2Vqxfssjaq-1fhP9Xn {
-    display: block;
-    max-width: 128px;
-    max-height: 128px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
 }
 
 ._3dxhpjIrFVCI5fTYjyHzuh {
     width: 100%;
     height: 100%;
+    max-width: 128px;
+    max-height: 128px;
     -webkit-animation: _2IMPNTtsop7ptErPfC8l7Z 1.5s linear infinite;
             animation: _2IMPNTtsop7ptErPfC8l7Z 1.5s linear infinite;
+    color: transparent;
 }
 
 @-webkit-keyframes _2IMPNTtsop7ptErPfC8l7Z {
@@ -888,6 +895,79 @@ button {
     100% {
         transform: rotate(360deg);
     }
+}
+.djTDJNijGXLsjmgDbRFDY {
+    width: 100%;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.tTTwpljyZc0NYWQl2xgZk {
+    padding: 1rem 1rem 2rem 1rem;
+}
+
+._1_3xcMWBbo4CH6pcTf9Yli {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary-dark);
+    padding: 0 0 1rem 0;
+}
+
+._2RERB9OkTfMrHr0BI1LD5B {
+    display: block;
+    max-width: 250px;
+    height: 30px;
+    font-size: 14px;
+    color: var(--text-label-light);
+    border: none;
+    outline: none;
+    padding: .5rem 0;
+    margin: 0 0 1rem 0;
+    background-color: transparent;
+    border-bottom: 2px solid var(--border-light);
+    transition: .2s border ease;
+}
+
+._2RERB9OkTfMrHr0BI1LD5B:focus {
+    outline: none;
+    border-bottom: 2px solid var(--accent-primary);
+}
+
+._2RERB9OkTfMrHr0BI1LD5B:required:invalid {
+    box-shadow: none !important;
+}
+
+.t8V5VGlH9RuV7RXt5zoQ7 {
+    position: absolute;
+    left: 0;
+    top: 16px;
+    pointer-events: none;
+    transition: .2s all ease;
+}
+
+._2RERB9OkTfMrHr0BI1LD5B::-moz-placeholder {
+    font-size: 14px;
+    color: var(--text-label-light);
+}
+
+._2RERB9OkTfMrHr0BI1LD5B:-ms-input-placeholder {
+    font-size: 14px;
+    color: var(--text-label-light);
+}
+
+._2RERB9OkTfMrHr0BI1LD5B::placeholder {
+    font-size: 14px;
+    color: var(--text-label-light);
+}
+
+._3g6lV-EtYdwnVr9XHKj534 {
+    background-color: var(--accent-primary);
+    padding: .5rem 1rem;
+    color: white;
+    font-size: 14px;
+    border: none;
+    border-radius: .25rem;
+    margin: 0;
 }
 .qGdbb0SwbsIYumD0N5X0C {
     display: flex;
