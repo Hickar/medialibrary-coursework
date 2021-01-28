@@ -2,45 +2,30 @@
 
 class FileManager {
 	private $db = NULL;
+	private $extensions = array(
+		'image' => ["jpg", "jpeg", "png", "gif", "svg"],
+		'video' => ["mp4", "ogg", "webm"],
+		'audio' => ["mp3", "ogg", "aac"],
+		'document' => ["txt", "pdf", "doc", "docx", "rtf"]
+	);
 
-	public function __construct(mysqli &$db) {
+	public function __construct(Database &$db) {
 		$this->db = &$db;
 	}
 
-	public function get_user_files_info(): bool {
-		$file_owner = $_SESSION['user_name'];
-
-		$file_select_query = "SELECT * FROM FILES WHERE file_owner='{$file_owner}'";
-		$result = $this->db->query($file_select_query) or die($this->db->error);
-		$file_rows = array();
-
-		while ($record = $result->fetch_array(MYSQLI_ASSOC)) {
-			$file_rows[] = array(
-				'name' => $record['file_name'],
-				'ID' => $record['file_ID'],
-				'type' => $record['file_type'],
-				'dateAdded' => $record['date_added']
-			);
-		}
-
-		header('Pragma: public');
-		header('Cache-Control: max-age=0, must-revalidate');
-		header('Content-type: application/json');
-
-		send_response($file_rows);
-		return true;
+	public function get_user_files_info(string $username) {
+		return $this->db->get_files($username);
 	}
 
 	public function get_user_file(string $file_ID, bool $is_thumbnail = FALSE): bool {
-		$file_select_query = "SELECT * FROM FILES WHERE file_ID='{$file_ID}'";
-		$file_record = $this->db->query($file_select_query)->fetch_array(MYSQLI_ASSOC) or die($this->db->error);
-		$file_path = $is_thumbnail ? $file_record['file_thumbnail_URL'] : $file_record['file_URL'];
+		$file = $this->db->get_file_path($file_ID);
+		$file_path = $is_thumbnail ? $file['thumbnail_URL'] : $file['URL'];
 
-		if (file_exists($file_path) || true) {
+		if (file_exists($file_path)) {
 			$file_info = finfo_open(FILEINFO_MIME_TYPE);
-			header('Content-Type: ' . finfo_file($file_info, $file_path));
 			finfo_close($file_info);
 
+			header('Content-Type: ' . finfo_file($file_info, $file_path));
 			header('Content-Disposition: attachment; filename=' . basename($file_path));
 			header('Cache-Control: max-age=604800, must-revalidate');
 			header('Pragma: public');
@@ -49,18 +34,16 @@ class FileManager {
 			ob_clean();
 			flush();
 			readfile($file_path);
-			return true;
+			return TRUE;
 		}
 
-		return false;
+		return FALSE;
 	}
 
 	public function download_user_file(string $file_ID): bool {
-		$file_select_query = "SELECT * FROM FILES WHERE file_ID='{$file_ID}'";
-		$file_record = $this->db->query($file_select_query)->fetch_array(MYSQLI_ASSOC) or die($this->db->error);
-		$file_path = $file_record['file_URL'];
+		$file = $this->db->get_file($file_ID);
 
-		if (file_exists($file_path)) {
+		if (file_exists($file['URL'])) {
 			header('Cache-Control: public');
 			header('Content-Description: File Transfer');
 			header('Content-Disposition: attachment; filename=' . basename($file_path));
@@ -87,32 +70,34 @@ class FileManager {
 	}
 
 	public function upload_user_file($dir_path, $file): bool {
-		$file_owner = $_SESSION['user_name'];
-		$file_info = pathinfo($file['name']);
-		$file_name = $file_info['filename'] . '.' . $file_info['extension'];
 		$file_ID = uniqid();
-		$file_type = $this->get_file_type($file_info['extension']);
-		$file_path = $dir_path . '/' . $file_ID . '.' . $file_info['extension'];
-		$file_thumbnail_path = NULL;
+		$file_info = pathinfo($file['name']);
+		$new_file = array(
+			'owner'=>$_SESSION['user_name'],
+			'name'=>$file_info['filename'] . '.' . $file_info['extension'],
+			'URL'=>$dir_path . '/' . $file_ID . '.' . $file_info['extension'],
+			'thumbnail_URL'=>NULL,
+			'type'=>$this->get_file_type($file_info['extension']),
+			'ID'=>$file_ID
+		);
 
 		if ($file['error'] !== 0) {
 			send_error_response($this->upload_error_message($file['error']));
 			return FALSE;
 		}
 
-		if (move_uploaded_file($file['tmp_name'], $file_path)) {
-			if ($file_type == "image") {
-				$file_thumbnail_path = $this->create_minimized_image($file_path, $dir_path);
+		if (move_uploaded_file($file['tmp_name'], $new_file['URL'])) {
+			if ($new_file['type'] == "image") {
+				$new_file['thumbnail_URL'] = $this->create_minimized_image($new_file['URL'], $dir_path);
 			}
 
-			if ($file_type == "video") {
-				$file_thumbnail_path = $this->create_video_thumbnail($file_path, $dir_path);
+			if ($new_file['type'] == "video") {
+				$new_file['thumbnail_URL'] = $this->create_video_thumbnail($new_file['URL'], $dir_path);
 			}
 
-			$file_insert_query = "INSERT INTO FILES (file_owner, file_name, file_URL, file_thumbnail_URL, file_type, file_ID)" .
-				"VALUES ('{$file_owner}', '{$file_name}', '{$file_path}', '{$file_thumbnail_path}', '{$file_type}', '{$file_ID}')";
-
-			return $this->db->query($file_insert_query) ? TRUE : FALSE;
+			return $this->db->create_file($new_file) ?
+				TRUE :
+				FALSE;
 		}
 
 		return FALSE;
@@ -120,27 +105,19 @@ class FileManager {
 
 	public function get_file_type($extension): string {
 		$extension = strtolower($extension);
-		$images_extensions = array("jpg", "jpeg", "png", "gif", "svg");
-		$video_extensions = array("mp4", "ogg", "webm");
-		$audio_extensions = array("mp3", "ogg", "aac");
-		$document_extensions = array("txt", "pdf", "doc", "docx", "rtf");
-
-		if (in_array($extension, $images_extensions)) return "image";
-		if (in_array($extension, $video_extensions)) return "video";
-		if (in_array($extension, $audio_extensions)) return "audio";
-		if (in_array($extension, $document_extensions)) return "document";
+		if (in_array($extension, $this->extensions['image'])) return "image";
+		if (in_array($extension, $this->extensions['video'])) return "video";
+		if (in_array($extension, $this->extensions['audio'])) return "audio";
+		if (in_array($extension, $this->extensions['document'])) return "document";
 		return "other";
 	}
 
-	public function delete_user_file(string $file_ID): bool {
-		$file_owner = $_SESSION['user_name'];
-		$file_deletion_query = "DELETE FROM FILES WHERE file_owner='{$file_owner}' AND file_ID='{$file_ID}'";
-		return $this->db->query($file_deletion_query) ? TRUE : FALSE;
+	public function delete_user_file(string $file_owner, string $file_ID): bool {
+		return $this->db->delete_user_file($file_owner, $file_ID);
 	}
 
 	public function update_user_file(string $ID, string $key, string $value): bool {
-		$update_query = "UPDATE FILES SET $key = '{$value}' WHERE file_owner='{$_SESSION['user_name']}' AND file_ID='{$ID}';";
-		return $this->db->query($update_query) ? TRUE : FALSE;
+		return $this->db->update_user_file($ID, $key, $value) ? TRUE : FALSE;
 	}
 
 	public function normalize_user_files($vector): array {
