@@ -11,6 +11,7 @@ header('Access-Control-Allow-Origin: https://medialib.hickar.space');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, PATCH, DELETE');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
+$db = new Database("localhost", "root", "warertep", "MEDIALIBRARY");
 $auth_manager = new Auth($db);
 $file_manager = new FileManager($db);
 $user_data = json_decode(file_get_contents('php://input'), TRUE);
@@ -40,7 +41,14 @@ if (isset($_REQUEST['uploadFiles']) && isset($_FILES['files'])) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['getUserFiles'])) {
-	$file_manager->get_user_files_info();
+	if (isset($_SESSION['user_name'])) {
+		$files_info = $file_manager->get_user_files_info($_SESSION['user_name']);
+
+		header('Pragma: public');
+		header('Cache-Control: max-age=0, must-revalidate');
+		header('Content-type: application/json');
+		send_response($files_info);
+	}
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['getUserFile'])) {
@@ -53,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['downloadUserFile']))
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "DELETE" && isset($_REQUEST['deleteUserFile'])) {
-	$file_manager->delete_user_file($_REQUEST['file_ID']) ?
+	$file_manager->delete_user_file($_SESSION['user_name'], $_REQUEST['file_ID']) ?
 		send_response(TRUE) :
 		send_error_response('Ошибка при удалении файла');
 }
