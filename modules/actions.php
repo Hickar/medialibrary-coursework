@@ -2,7 +2,14 @@
 require_once("database.php");
 require_once("auth.php");
 require_once("filemanager.php");
+require_once("utils.php");
 session_start();
+
+error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
+
+header('Access-Control-Allow-Origin: https://medialib.hickar.space');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, PATCH, DELETE');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 $auth_manager = new Auth($db);
 $file_manager = new FileManager($db);
@@ -20,14 +27,11 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['logout'])) {
 	$auth_manager->logout();
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['isAuthorized'])) {
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['isAuthed'])) {
 	if ($auth_manager->isAuthorized()) {
 		setcookie('user_name', $_SESSION['user_name'], time() + 8600, '/');
 	}
-	echo json_encode(array(
-		'data' => $auth_manager->isAuthorized(),
-		'err' => FALSE
-	), JSON_UNESCAPED_UNICODE);
+	send_response($auth_manager->isAuthorized());
 }
 
 if (isset($_REQUEST['uploadFiles']) && isset($_FILES['files'])) {
@@ -49,5 +53,9 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['downloadUserFile']))
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "DELETE" && isset($_REQUEST['deleteUserFile'])) {
-	$file_manager->delete_user_file($_REQUEST['file_ID']);
+	if ($file_manager->delete_user_file($_REQUEST['file_ID'])) {
+		send_response(TRUE);
+	} else {
+		send_error_response('Ошибка при удалении файла');
+	}
 }

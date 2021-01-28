@@ -29,7 +29,7 @@ export default function LoginForm() {
 		const data = await response.json();
 
 		if (data.err) {
-			setNotification({type: "error", text: data.message, active: true});
+			setNotification({type: "error", text: data.data, active: true});
 			return;
 		}
 

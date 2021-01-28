@@ -70,7 +70,7 @@ export default function GalleryViewModal(props) {
 
   useEffect(() => {
     setQuery(`http://medialibrary.local/modules/actions.php?getUserFile&file_ID=${state.itemActive.ID}`);
-  }, [state]);
+  }, [state.itemActive]);
 
   useEffect(() => {
     doFetch(query);

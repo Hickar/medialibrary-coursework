@@ -3,18 +3,18 @@ CREATE DATABASE MEDIALIBRARY;
 USE MEDIALIBRARY;
 
 CREATE TABLE USERS (
-    user_ID int AUTO_INCREMENT NOT NULL,
-    user_name varchar(63) NOT NULL,
-    user_password varchar(63) NOT NULL,
+    user_ID INT AUTO_INCREMENT NOT NULL,
+    user_name VARCHAR(63) NOT NULL,
+    user_password VARCHAR(63) NOT NULL,
     PRIMARY KEY (user_ID)
 );
 
 CREATE TABLE FILES (
-    file_owner varchar(63) NOT NULL,
-    file_name varchar(63) NOT NULL,
-    file_URL varchar(63) NOT NULL,
-    file_thumbnail_URL varchar(63),
-    file_type varchar(63) NOT NULL,
-    file_ID varchar(63) NOT NULL,
+    file_owner VARCHAR(63) NOT NULL,
+    file_name VARCHAR(63) NOT NULL,
+    file_URL VARCHAR(63) NOT NULL,
+    file_thumbnail_URL VARCHAR(63),
+    file_type VARCHAR(63) NOT NULL,
+    file_ID VARCHAR(63) NOT NULL UNIQUE,
     date_added TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
