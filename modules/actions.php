@@ -53,9 +53,19 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['downloadUserFile']))
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "DELETE" && isset($_REQUEST['deleteUserFile'])) {
-	if ($file_manager->delete_user_file($_REQUEST['file_ID'])) {
-		send_response(TRUE);
-	} else {
+	$file_manager->delete_user_file($_REQUEST['file_ID']) ?
+		send_response(TRUE) :
 		send_error_response('Ошибка при удалении файла');
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "UPDATE" && isset($_REQUEST['updateUsername'])) {
+	if ($auth_manager->update_user_name($user_data['name'])) {
+		send_response('Псевдоним был успешно изменен');
+	}
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "UPDATE" && isset($_REQUEST['updatePassword'])) {
+	if ($auth_manager->update_user_password($user_data['password'], $user_data['new_password'])) {
+		send_response('Пароль был успешно изменен');
 	}
 }
