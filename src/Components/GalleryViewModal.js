@@ -3,6 +3,7 @@ import React, {useState, useEffect, useReducer, useContext} from "react";
 import useFetch from "../Hooks/useFetch";
 import {GalleryContext} from "../Contexts/GalleryContext";
 import {NotificationContext} from "../Contexts/NotificationContext";
+import LoadingSpinner from "./LoadingSpinner";
 
 export default function GalleryViewModal(props) {
   const initialState = {
@@ -50,7 +51,7 @@ export default function GalleryViewModal(props) {
       ...state,
       itemActive: state.items[newIndex],
       itemActiveIndex: newIndex
-    }
+    };
   }
 
   function handleKeyDown(e) {
@@ -107,7 +108,10 @@ export default function GalleryViewModal(props) {
       <div className={styles.modal}>
         <div onClick={() => dispatch({type: "previous"})}
              className={styles.nav_button + " " + styles.nav_button_left}/>
-        {isLoading ? null : getTypeSpecificViewableElement(state.itemActive.type, data)}
+        {isLoading ?
+          <LoadingSpinner/> :
+          getTypeSpecificViewableElement(state.itemActive.type, data)
+        }
         <div onClick={() => dispatch({type: "next"})}
              className={styles.nav_button + " " + styles.nav_button_right}/>
       </div>
