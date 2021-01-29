@@ -50,7 +50,7 @@ class Auth {
 			return FALSE;
 		}
 
-		$user = $this->db->is_user_exists($user_name);
+		$user = $this->db->get_user($user_name);
 
 		if ($user) {
 			send_error_response('Пользователь с данным идентификатором уже существует');
@@ -83,23 +83,17 @@ class Auth {
 			return FALSE;
 		}
 
-		$user_exists = $this->db->is_user_exists($new_username);
+		$user = $this->db->get_user($new_username);
 
-		if ($user_exists) {
+		if ($user) {
 			send_error_response('Пользователь с данным псевдонимом уже существует');
 			return FALSE;
 		}
 
-		$update_query = "UPDATE USERS SET name = '{$new_username}' " .
-			" WHERE name='{$_SESSION['user_name']}' AND ID='{$_SESSION['user_ID']}';";
-		$update_files_owner_query = "UPDATE FILES SET owner = '{$new_username}' " .
-			" WHERE owner='{$_SESSION['user_name']}';";
-
-		$this->db->update_user($_SESSION['user_ID'], "name", $new_username);
-		$this->db->query("UPDATE USERS SET name = '{$new_username}' " .
-			" WHERE name='{$_SESSION['user_name']}' AND ID='{$_SESSION['user_ID']}'");
-
-		if ($this->db->query($update_query) && $this->db->query($update_files_owner_query)) {
+		if (
+			$this->db->update_user($_SESSION['user_ID'], "name", $new_username) &&
+			$this->db->update_files_owner($_SESSION['user_name'], $new_username)
+		) {
 			$_SESSION['user_name'] = $new_username;
 			setcookie('user_name', $new_username, time() + 8600, '/');
 			return TRUE;
@@ -124,15 +118,13 @@ class Auth {
 			return FALSE;
 		}
 
-		$new_password = password_hash($new_password, CRYPT_SHA256);
+		$user = $this->db->get_user($_SESSION['user_name']);
 
-		$user_query = "SELECT * FROM USERS WHERE name = '{$_SESSION['user_name']}';";
-		$user_row = $this->db->query($user_query)->fetch_array(MYSQLI_ASSOC);
-
-		if ($user_row && password_verify($old_password, $user_row['user_password'])) {
-			$update_query = "UPDATE USERS SET password = '{$new_password}'" .
-				" WHERE name='{$_SESSION['user_name']}' AND ID='{$_SESSION['user_ID']}';";
-			return $this->db->query($update_query) ? TRUE : FALSE;
+		if ($user && password_verify($old_password, $user['password'])) {
+			return $this->db->update_user(
+				$_SESSION['user_ID'],
+				"password",
+				password_hash($new_password, CRYPT_SHA256));
 		} else {
 			send_error_response("Неправильно указан текущий пароль");
 		}

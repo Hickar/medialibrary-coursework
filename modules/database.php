@@ -24,33 +24,17 @@ class Database {
 		return $this->query("UPDATE USERS SET $key='{$value}' WHERE ID='{$ID}'");
 	}
 
-	public function update_files_owner(string $username, string $id) {
-
-	}
-
-	public function is_user_exists(string $username = NULL): bool {
-		return $this->query("SELECT * FROM USERS WHERE name='{$username}'")->fetch_array();
-	}
-
 	public function create_file(array $file) {
 		return $this->db->query("INSERT INTO FILES (owner, name, URL, thumbnail_URL, type, ID)" .
 			"VALUES ('{$file['owner']}', '{$file['name']}', '{$file['URL']}', '{$file['thumbnail_URL']}', '{$file['type']}', '{$file['ID']}')");
 	}
 
-	public function get_file(string $ID) {
-		return $this->query("SELECT * FROM FILES WHERE ID='{$ID}'")->fetch_array();
+	public function get_file_by_ID(string $ID) {
+		return $this->query("SELECT * FROM FILES WHERE ID='{$ID}'")->fetch_array(MYSQLI_ASSOC);
 	}
 
-	public function get_files(string $username): array {
-//		$tmp = array();
-//		while ($record = $this->db->query("SELECT * FROM USERS WHERE name='{$username}'")) {
-//			$tmp = $record;
-//		}
-		return $this->query("SELECT * FROM FILES WHERE owner='{$username}'")->fetch_all();
-	}
-
-	public function get_file_path(string $ID) {
-		return $this->query("SELECT * FROM FILES WHERE ID='{$ID}'")->fetch_array();
+	public function get_files_by_owner(string $username): array {
+		return $this->query("SELECT * FROM FILES WHERE owner='{$username}'")->fetch_all(MYSQLI_ASSOC);
 	}
 
 	public function delete_file(string $owner, string $ID) {
@@ -59,6 +43,10 @@ class Database {
 
 	public function update_file(string $ID, string $key, string $value) {
 		return $this->query("UPDATE FILES SET $key='{$value}' WHERE ID='{$ID}'");
+	}
+
+	public function update_files_owner(string $old_owner, string $new_owner) {
+		return $this->query("UPDATE FILES SET owner='{$new_owner}' WHERE owner='{$old_owner}'");
 	}
 }
 

@@ -56,10 +56,6 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['getUserFile'])) {
 	$file_manager->get_user_file($_REQUEST['file_ID'], $isThumbRequired);
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['downloadUserFile'])) {
-	$file_manager->download_user_file($_REQUEST['file_ID']);
-}
-
 if ($_SERVER["REQUEST_METHOD"] == "DELETE" && isset($_REQUEST['deleteUserFile'])) {
 	$file_manager->delete_user_file($_SESSION['user_name'], $_REQUEST['file_ID']) ?
 		send_response(TRUE) :
