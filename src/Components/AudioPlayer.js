@@ -51,7 +51,6 @@ export default function AudioPlayer(props) {
 
 	return (
 		<audio ref={audioRef} src={isLoading ? null : data}>
-			{/*<source />*/}
 			<p>Ваш браузер не поддерживает HTML5 элемент <code>Audio</code></p>
 		</audio>
 	)

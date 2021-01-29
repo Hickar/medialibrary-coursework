@@ -158,36 +158,6 @@
     cursor: pointer;
 }
 
-/*.audio_button {*/
-/*    width: 128px;*/
-/*    height: 128px;*/
-/*}*/
-
-/*.audio_button rect,*/
-/*.audio_button path {*/
-/*    fill: var(--background-dark);*/
-/*}*/
-
-/*.audio_button circle {*/
-/*    stroke: var(--background-dark)*/
-/*}*/
-
-/*.audio_button[data-is-active="false"] .audio_button_pause {*/
-/*    display: none;*/
-/*}*/
-
-/*.audio_button[data-is-active="true"] .audio_button_play {*/
-/*    display: none;*/
-/*}*/
-
-/*.audio_button[data-is-active="true"] circle {*/
-/*    stroke: var(--accent-primary)*/
-/*}*/
-
-/*.audio_button[data-is-active="true"] .audio_button_pause rect {*/
-/*    fill: var(--accent-primary)*/
-/*}*/
-
 @media screen and (max-width: 1196px) {
     .wrapper {
         width: var(--width-4);

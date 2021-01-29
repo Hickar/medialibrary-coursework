@@ -37,7 +37,7 @@ export default function MediaCard(props) {
 
 	async function handleClickOnDownload() {
 		const filename = mediaFile.name;
-		const actionURL = `http://medialibrary.local/modules/actions.php?downloadUserFile&file_ID=${mediaFile.ID}`;
+		const actionURL = `http://medialibrary.local/modules/actions.php?getUserFile&file_ID=${mediaFile.ID}`;
 		const response = await fetch(actionURL, {
 			method: "GET"
 		});
@@ -122,7 +122,7 @@ export default function MediaCard(props) {
 				<div className={styles.info}>
 					<div className={styles.title}>{mediaFile.name}</div>
 					<div className={styles.meta_row}>
-						<div className={styles.date_added}>{mediaFile.dateAdded}</div>
+						<div className={styles.date_added}>{mediaFile.date_added}</div>
 						<div className={styles.dropdown_icon}>
 							<div className={styles.dropdown_menu}>
 								<div onClick={handleClickOnDownload} className={styles.dropdown_menuitem}>Скачать</div>

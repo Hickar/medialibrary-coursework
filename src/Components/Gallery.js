@@ -149,15 +149,16 @@ export default function Gallery() {
           <img className={styles.toolbar_item_icon} src={uploadFileIcon} alt={"File upload button"}/>
         </button>
       </div>
-      <div className={styles.files_wrapper}>
-        {userData && galleryState.isAudioActive && galleryState.activeItem ?
-          <AudioPlayer
-            mediaItemActive={galleryState.activeItem}
-            isActive={galleryState.isAudioActive}
-          /> :
-          null
-        }
-        {userData && !isLoading ? userData.data.map((file) => {
+      {!isLoading ?
+        <div className={styles.files_wrapper}>
+          {userData && galleryState.isAudioActive && galleryState.activeItem ?
+            <AudioPlayer
+              mediaItemActive={galleryState.activeItem}
+              isActive={galleryState.isAudioActive}
+            /> :
+            null
+          }
+          {userData.data.map((file) => {
             if (galleryState.activeItem && file.ID === galleryState.activeItem.ID && file.type === "audio") {
               return <MediaCard
                 key={file.ID}
@@ -172,10 +173,12 @@ export default function Gallery() {
                 mediafile={file}
               />;
             }
-          }) :
-          <LoadingSpinner/>
-        }
-      </div>
+          })
+          }
+        </div> :
+        <LoadingSpinner/>
+      }
+
     </GalleryContext.Provider>
   );
 }

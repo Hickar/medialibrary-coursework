@@ -107,13 +107,15 @@ export default function GalleryViewModal(props) {
       }} className={styles.overlay_inner}/>
       <div className={styles.modal}>
         <div onClick={() => dispatch({type: "previous"})}
-             className={styles.nav_button + " " + styles.nav_button_left}/>
+             className={styles.nav_button + " " + styles.nav_button_left}
+        />
         {isLoading ?
           <LoadingSpinner/> :
           getTypeSpecificViewableElement(state.itemActive.type, data)
         }
         <div onClick={() => dispatch({type: "next"})}
-             className={styles.nav_button + " " + styles.nav_button_right}/>
+             className={styles.nav_button + " " + styles.nav_button_right}
+        />
       </div>
     </div>
   );

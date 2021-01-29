@@ -11,7 +11,6 @@ import Notification from "./Components/Notification";
 
 function App() {
 	const [notificationState, dispatchNotificationAction] = useState({type: "", text: "", active: false});
-
 	const [authQuery, setAuthQuery] = useState("http://medialibrary.local/modules/actions.php?isAuthed");
 	const [authState, isLoading, doFetch] = useFetch(authQuery);
 
