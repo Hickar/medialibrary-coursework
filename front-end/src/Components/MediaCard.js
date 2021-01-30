@@ -12,7 +12,7 @@ export default function MediaCard(props) {
 	const downloadLinkRef = useRef();
 	const isAudioPlaying = props.isAudioPlaying ?? false;
 	const [data, isLoading] = useFetch(
-		`http://medialibrary.local/modules/actions.php?getUserFile&file_ID=${mediaFile.ID}&thumb`,
+		`${process.env.HOST_ADDRESS}?getUserFile&file_ID=${mediaFile.ID}&thumb`,
 		"FILE"
 	)
 	const dispatchNotificationAction = useContext(NotificationContext);
@@ -37,7 +37,7 @@ export default function MediaCard(props) {
 
 	async function handleClickOnDownload() {
 		const filename = mediaFile.name;
-		const actionURL = `http://medialibrary.local/modules/actions.php?getUserFile&file_ID=${mediaFile.ID}`;
+		const actionURL = `${process.env.HOST_ADDRESS}?getUserFile&file_ID=${mediaFile.ID}`;
 		const response = await fetch(actionURL, {
 			method: "GET"
 		});
@@ -56,7 +56,7 @@ export default function MediaCard(props) {
 	}
 
 	async function handleClickOnDelete() {
-		const actionURL = `http://medialibrary.local/modules/actions.php?deleteUserFile&file_ID=${mediaFile.ID}`;
+		const actionURL = `${process.env.HOST_ADDRESS}?deleteUserFile&file_ID=${mediaFile.ID}`;
 		const response = await fetch(actionURL, {
 			method: "DELETE"
 		});

@@ -19,7 +19,7 @@ export default function GalleryViewModal(props) {
     });
 
   const [query, setQuery] = useState(
-    "http://medialibrary.local/modules/actions.php?getUserFile&file_ID=" + props.mediaItemActive.ID
+    `${process.env.HOST_ADDRESS}?getUserFile&file_ID=${props.mediaItemActive.ID}`
   );
   const [data, isLoading, doFetch] = useFetch(
     query,
@@ -70,7 +70,7 @@ export default function GalleryViewModal(props) {
   }, []);
 
   useEffect(() => {
-    setQuery(`http://medialibrary.local/modules/actions.php?getUserFile&file_ID=${state.itemActive.ID}`);
+    setQuery(`${process.env.HOST_ADDRESS}?getUserFile&file_ID=${state.itemActive.ID}`);
   }, [state.itemActive]);
 
   useEffect(() => {

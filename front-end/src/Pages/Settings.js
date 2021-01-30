@@ -17,7 +17,7 @@ export default function Settings() {
   }
 
   async function handleUsernameChangeSubmit() {
-    const actionURL = "http://medialibrary.local/modules/actions.php?updateUsername";
+    const actionURL = `${process.env.HOST_ADDRESS}?updateUsername`;
 
     const response = await fetch(actionURL, {
       method: "UPDATE",
@@ -38,7 +38,7 @@ export default function Settings() {
   }
 
   async function handlePasswordChangeSubmit() {
-    const actionURL = "http://medialibrary.local/modules/actions.php?updatePassword";
+    const actionURL = `${process.env.REACT_APP_HOST_IP_ADDRESS}?updatePassword`;
 
     const response = await fetch(actionURL, {
       method: "UPDATE",

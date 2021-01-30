@@ -1,11 +1,38 @@
 version: "3.7"
 
 services:
-  front-end:
+  www:
+    container_name: apache
     image: front-end:latest
     build: ./front-end
     ports:
-    - 8080:80
-    - 8443:443
-#    command: httpd -k restart && tail -f /dev/null
-#    tty: true
+      - 8080:80
+      - 8443:443
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - back-api
+
+  back-api:
+    container_name: php-api
+    image: back-end:latest
+    build: ./back-end
+    args:
+      - HOST_ADDRESS=https://medialib.hickar.space
+    ports:
+      - 8000:8000
+    links:
+      - db
+    depends_on:
+      - db
+    command: php -S 0.0.0.0:8000
+
+  db:
+    container_name: mysql
+    image: mysql:8.0
+    build: ./db
+    environment:
+      - MYSQL_ROOT_PASSWORD=super_secret_password
+    ports:
+      - 3306
+    command: --default-authentication-plugin=mysql_native_password

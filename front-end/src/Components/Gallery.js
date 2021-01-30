@@ -12,7 +12,7 @@ import useFetch from "../Hooks/useFetch";
 export default function Gallery() {
   const setNotification = useContext(NotificationContext);
   const fileInput = useRef();
-  const [query, setQuery] = useState("http://medialibrary.local/modules/actions.php?getUserFiles");
+  const [query, setQuery] = useState(`${process.env.HOST_ADDRESS}?getUserFiles`);
   const [userData, isLoading, doFetch] = useFetch(query);
 
   const galleryInitialState = {
@@ -102,7 +102,7 @@ export default function Gallery() {
       formData.append("files[]", file, file.name);
     }
 
-    const response = await fetch("http://medialibrary.local/modules/actions.php?uploadFiles", {
+    const response = await fetch(`${process.env.HOST_ADDRESS}?uploadFiles`, {
       body: formData,
       method: "POST"
     });

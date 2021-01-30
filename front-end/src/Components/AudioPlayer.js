@@ -7,7 +7,7 @@ export default function AudioPlayer(props) {
 	const audioRef = useRef();
 	const [isPlaying, setIsPlaying] = useState(props.isActive);
 	const [data, isLoading] = useFetch(
-		`http://medialibrary.local/modules/actions.php?getUserFile&file_ID=${props.mediaItemActive.ID}`,
+		`${process.env.HOST_ADDRESS}?getUserFile&file_ID=${props.mediaItemActive.ID}`,
 		"FILE"
 	);
 

@@ -18,14 +18,14 @@ export default function SideNavbar() {
   const username = getCookie("user_name");
 
   async function handleLogout() {
-    const response = await fetch("http://medialibrary.local/modules/actions.php?logout", {
+    const response = await fetch(`${process.env.HOST_ADDRESS}?logout`, {
       method: "GET"
     })
 
     const data = await response.json();
 
     if (!data.err) {
-      setAuthQuery("http://medialibrary.local/modules/actions.php?isAuthed ");
+      setAuthQuery(`${process.env.HOST_ADDRESS}?isAuthed `);
       setNotification({type: "message", text: "Вы вышли из учётной записи", active: true});
       history.push("/");
     }
