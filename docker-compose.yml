@@ -1,0 +1,11 @@
+version: "3.7"
+
+services:
+  front-end:
+    image: front-end:latest
+    build: ./front-end
+    ports:
+    - 8080:80
+    - 8443:443
+#    command: httpd -k restart && tail -f /dev/null
+#    tty: true

@@ -1,6 +1,2 @@
-yarn-error.log
-node_modules
-storage/*
-dist/main.*.hot-update.*
-docs
-.idea
+.DS_Store
+.idea/
