@@ -17,7 +17,7 @@ export default function Settings() {
   }
 
   async function handleUsernameChangeSubmit() {
-    const actionURL = `${process.env.HOST_ADDRESS}?updateUsername`;
+    const actionURL = `https://medialib.hickar.space/actions.php?updateUsername`;
 
     const response = await fetch(actionURL, {
       method: "UPDATE",

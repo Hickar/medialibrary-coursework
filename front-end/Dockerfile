@@ -2,10 +2,7 @@ FROM node:lts-alpine as build-stage
 
 WORKDIR /app
 COPY . .
-RUN yarn install
-ARG HOST_ADDRESS
-ENV HOST_ADDRESS $HOST_ADDRESS
-RUN yarn build
+RUN yarn install && yarn build
 
 
 

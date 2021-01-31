@@ -17,8 +17,6 @@ services:
     container_name: php-api
     image: back-end:latest
     build: ./back-end
-    args:
-      - HOST_ADDRESS=https://medialib.hickar.space
     ports:
       - 8000:8000
     links:

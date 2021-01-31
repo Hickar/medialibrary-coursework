@@ -15,8 +15,8 @@ export default function LoginForm() {
 		e.preventDefault();
 
 		const actionURL = isRegistrationActive ?
-			"http://localhost:8000/modules/actions.php?register" :
-			"http://localhost:8000/modules/actions.php?login";
+			`https://medialib.hickar.space/actions.php?register` :
+			`https://medialib.hickar.space/actions.php?login`;
 
 		const response = await fetch(actionURL, {
 			method: "POST",
@@ -36,7 +36,7 @@ export default function LoginForm() {
 		if (isRegistrationActive) {
 			setIsRegistrationActive(false);
 		} else {
-			setAuthQuery("http://localhost:8000/modules/actions.php?isAuthed  ");
+			setAuthQuery(`https://medialib.hickar.space/actions.php?isAuthed  `);
 			history.push("/");
 		}
 

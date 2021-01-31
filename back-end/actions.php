@@ -1,8 +1,8 @@
 <?php
-require_once("database.php");
-require_once("auth.php");
-require_once("filemanager.php");
-require_once("utils.php");
+require_once("src/database.php");
+require_once("src/auth.php");
+require_once("src/filemanager.php");
+require_once("src/utils.php");
 session_start();
 
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
