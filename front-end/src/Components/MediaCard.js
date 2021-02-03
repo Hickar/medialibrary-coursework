@@ -12,7 +12,7 @@ export default function MediaCard(props) {
 	const downloadLinkRef = useRef();
 	const isAudioPlaying = props.isAudioPlaying ?? false;
 	const [data, isLoading] = useFetch(
-		`https://medialib.hickar.space/actions.php?getUserFile&file_ID=${mediaFile.ID}&thumb`,
+		`https://medialib.hickar.space/api?getUserFile&file_ID=${mediaFile.ID}&thumb`,
 		"FILE"
 	)
 	const dispatchNotificationAction = useContext(NotificationContext);
@@ -37,7 +37,7 @@ export default function MediaCard(props) {
 
 	async function handleClickOnDownload() {
 		const filename = mediaFile.name;
-		const actionURL = `https://medialib.hickar.space/actions.php?getUserFile&file_ID=${mediaFile.ID}`;
+		const actionURL = `https://medialib.hickar.space/api?getUserFile&file_ID=${mediaFile.ID}`;
 		const response = await fetch(actionURL, {
 			method: "GET"
 		});
@@ -56,7 +56,7 @@ export default function MediaCard(props) {
 	}
 
 	async function handleClickOnDelete() {
-		const actionURL = `https://medialib.hickar.space/actions.php?deleteUserFile&file_ID=${mediaFile.ID}`;
+		const actionURL = `https://medialib.hickar.space/api?deleteUserFile&file_ID=${mediaFile.ID}`;
 		const response = await fetch(actionURL, {
 			method: "DELETE"
 		});

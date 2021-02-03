@@ -19,7 +19,7 @@ export default function GalleryViewModal(props) {
     });
 
   const [query, setQuery] = useState(
-    `https://medialib.hickar.space/actions.php?getUserFile&file_ID=${props.mediaItemActive.ID}`
+    `https://medialib.hickar.space/api?getUserFile&file_ID=${props.mediaItemActive.ID}`
   );
   const [data, isLoading, doFetch] = useFetch(
     query,
@@ -70,7 +70,7 @@ export default function GalleryViewModal(props) {
   }, []);
 
   useEffect(() => {
-    setQuery(`https://medialib.hickar.space/actions.php?getUserFile&file_ID=${state.itemActive.ID}`);
+    setQuery(`https://medialib.hickar.space/api?getUserFile&file_ID=${state.itemActive.ID}`);
   }, [state.itemActive]);
 
   useEffect(() => {

@@ -18,14 +18,14 @@ export default function SideNavbar() {
   const username = getCookie("user_name");
 
   async function handleLogout() {
-    const response = await fetch(`https://medialib.hickar.space/actions.php?logout`, {
+    const response = await fetch(`https://medialib.hickar.space/api?logout`, {
       method: "GET"
     })
 
     const data = await response.json();
 
     if (!data.err) {
-      setAuthQuery(`https://medialib.hickar.space/actions.php?isAuthed `);
+      setAuthQuery(`https://medialib.hickar.space/api?isAuthed `);
       setNotification({type: "message", text: "Вы вышли из учётной записи", active: true});
       history.push("/");
     }
