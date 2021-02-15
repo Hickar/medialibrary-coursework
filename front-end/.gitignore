@@ -1,7 +1,6 @@
 yarn-error.log
 node_modules
-../back-end/storage/*
 dist/main.*.hot-update.*
 .idea
 certs/*
-dist/
+dist/assets/*

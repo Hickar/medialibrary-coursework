@@ -17,7 +17,7 @@ class Auth {
 			return FALSE;
 		}
 
-		$user = $this->db->get_user($user_name);
+		$user = $this->db->get_user_by_name($user_name);
 
 		if ($user && password_verify($user_password, $user['password'])) {
 			$_SESSION['user_ID'] = $user['ID'];
@@ -50,7 +50,7 @@ class Auth {
 			return FALSE;
 		}
 
-		$user = $this->db->get_user($user_name);
+		$user = $this->db->get_user_by_name($user_name);
 
 		if ($user) {
 			send_error_response('Пользователь с данным идентификатором уже существует');
@@ -79,21 +79,18 @@ class Auth {
 	}
 
 	public function update_user_name(string $new_username): bool {
-		if (!isset($_SESSION['user_name'])) {
+		if (!isset($_SESSION['user_ID'])) {
 			return FALSE;
 		}
 
-		$user = $this->db->get_user($new_username);
+		$user = $this->db->get_user_by_name($new_username);
 
 		if ($user) {
 			send_error_response('Пользователь с данным псевдонимом уже существует');
 			return FALSE;
 		}
 
-		if (
-			$this->db->update_user($_SESSION['user_ID'], "name", $new_username) &&
-			$this->db->update_files_owner($_SESSION['user_name'], $new_username)
-		) {
+		if ($this->db->update_user($_SESSION['user_ID'], "name", $new_username)) {
 			$_SESSION['user_name'] = $new_username;
 			setcookie('user_name', $new_username, time() + 8600, '/');
 			return TRUE;
@@ -118,13 +115,10 @@ class Auth {
 			return FALSE;
 		}
 
-		$user = $this->db->get_user($_SESSION['user_name']);
+		$user = $this->db->get_user_by_name($_SESSION['user_name']);
 
 		if ($user && password_verify($old_password, $user['password'])) {
-			return $this->db->update_user(
-				$_SESSION['user_ID'],
-				"password",
-				password_hash($new_password, CRYPT_SHA256));
+			return $this->db->update_user($_SESSION['user_ID'], "password", password_hash($new_password, CRYPT_SHA256));
 		} else {
 			send_error_response("Неправильно указан текущий пароль");
 		}

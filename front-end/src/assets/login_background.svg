@@ -3,7 +3,7 @@
 <path d="M407.592 542.577C447.877 524.323 467.517 509.716 496.769 475.098" stroke="#F0F0F0" stroke-width="4" stroke-linecap="round"/>
 <path d="M431.739 547.359C464.582 532.477 480.594 520.568 504.443 492.344" stroke="#F0F0F0" stroke-width="4" stroke-linecap="round"/>
 <path d="M749.464 511.628L742.652 570.714L692.593 538.594L749.464 511.628Z" stroke="#F0F0F0" stroke-width="4"/>
-<circle cx="314" cy="101" r="22" fill="#F0F0F0" stroke="#C4C4C4" stroke-width="4"/>
+<circle cx="314" cy="101" r="22" stroke="#C4C4C4" stroke-width="4"/>
 <rect x="192.785" y="208.117" width="46" height="46" rx="6" transform="rotate(-34.9206 192.785 208.117)" stroke="#C4C4C4" stroke-width="4"/>
 <path d="M223.078 335.318L246.954 310.897L280.376 317.923L289.873 349.206L265.997 373.627L232.575 366.601L223.078 335.318Z" stroke="#C4C4C4" stroke-width="4"/>
 <defs>

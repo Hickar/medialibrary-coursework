@@ -46,10 +46,6 @@ export default function SideNavbar() {
         <img className={styles.navbar_link_icon} src={settingsIcon} alt={"Settings icon"}/>
         <div className={styles.navbar_link_text}>Настройки</div>
       </NavLink>
-      <NavLink className={styles.navbar_link} activeClassName={styles.navbar_link_active} to={"/dashboard/about"}>
-        <img className={styles.navbar_link_icon} src={aboutIcon} alt={"About icon"}/>
-        <div className={styles.navbar_link_text}>О проекте</div>
-      </NavLink>
       <div className={styles.delimiter}/>
       <a onClick={handleLogout} className={styles.navbar_link}>
         <img className={styles.navbar_link_icon} src={logoutIcon} alt={"Logout icon"}/>

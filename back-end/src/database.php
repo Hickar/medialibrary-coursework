@@ -16,7 +16,7 @@ class Database {
 		return $this->query("INSERT INTO USERS (ID, name, password) VALUES (NULL, '{$name}', '{$password}')");
 	}
 
-	public function get_user(string $username) {
+	public function get_user_by_name(string $username) {
 		return $this->query("SELECT * FROM USERS WHERE name='{$username}'")->fetch_array(MYSQLI_ASSOC);
 	}
 
@@ -43,10 +43,6 @@ class Database {
 
 	public function update_file(string $ID, string $key, string $value) {
 		return $this->query("UPDATE FILES SET $key='{$value}' WHERE ID='{$ID}'");
-	}
-
-	public function update_files_owner(string $old_owner, string $new_owner) {
-		return $this->query("UPDATE FILES SET owner='{$new_owner}' WHERE owner='{$old_owner}'");
 	}
 }
 
