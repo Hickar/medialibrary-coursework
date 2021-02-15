@@ -17,10 +17,10 @@ export default function Settings() {
   }
 
   async function handleUsernameChangeSubmit() {
-    const actionURL = `https://medialib.hickar.space/api?updateUsername`;
+    const actionURL = `${process.env.HOST_API_URL}?updateUsername`;
 
     const response = await fetch(actionURL, {
-      method: "UPDATE",
+      method: "PUT",
       body: JSON.stringify(userData),
       headers: {
         "Content-Type": "application/json"
@@ -38,10 +38,10 @@ export default function Settings() {
   }
 
   async function handlePasswordChangeSubmit() {
-    const actionURL = `${process.env.REACT_APP_HOST_IP_ADDRESS}?updatePassword`;
+    const actionURL = `${process.env.HOST_API_URL}?updatePassword`;
 
     const response = await fetch(actionURL, {
-      method: "UPDATE",
+      method: "PUT",
       body: JSON.stringify(userData),
       headers: {
         "Content-Type": "application/json"

@@ -11,7 +11,7 @@ import Notification from "./Components/Notification";
 
 function App() {
 	const [notificationState, dispatchNotificationAction] = useState({type: "", text: "", active: false});
-	const [authQuery, setAuthQuery] = useState(`https://medialib.hickar.space/api?isAuthed`);
+	const [authQuery, setAuthQuery] = useState(`${process.env.HOST_API_URL}?isAuthed`);
 	const [authState, isLoading, doFetch] = useFetch(authQuery);
 
 	useEffect(() => {

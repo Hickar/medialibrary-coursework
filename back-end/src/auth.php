@@ -23,7 +23,7 @@ class Auth {
 			$_SESSION['user_ID'] = $user['ID'];
 			$_SESSION['user_name'] = $user['name'];
 			$_SESSION['status'] = TRUE;
-			setcookie('user_name', $user['name'], time() + 8600, '/');
+			setcookie('user_name', $user['name'], time() + 3600, '/', false);
 			send_response("Добро пожаловать, {$user['name']}");
 			return TRUE;
 		} else {

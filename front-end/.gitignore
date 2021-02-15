@@ -4,3 +4,4 @@ node_modules
 dist/main.*.hot-update.*
 .idea
 certs/*
+dist/

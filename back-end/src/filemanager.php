@@ -13,19 +13,26 @@ class FileManager {
 		$this->db = &$db;
 	}
 
-	public function get_user_files_info(string $username) {
-		return $this->db->get_files_by_owner($username);
+	public function get_user_files_info(string $ID) {
+		return $this->db->get_files_by_owner_ID($ID);
 	}
 
 	public function get_user_file(string $file_ID, bool $is_thumbnail = FALSE): bool {
 		$file = $this->db->get_file_by_ID($file_ID);
 		$file_path = $is_thumbnail ? $file['thumbnail_URL'] : $file['URL'];
+		$file_path_info = pathinfo($file_path);
 
+		if ($file['owner_ID'] !== $_SESSION['user_ID']) {
+			return FALSE;
+		}
+
+		$file_path = "/app/storage/{$_SESSION['user_ID']}/{$file_path_info['filename']}.{$file_path_info['extension']}";
+		
 		if (file_exists($file_path)) {
 			$file_info = finfo_open(FILEINFO_MIME_TYPE);
 			finfo_close($file_info);
 
-			header('Content-Type: ' . finfo_file($file_info, $file_path));
+			// header('Content-Type: ' . finfo_file($file_info, $file_path));
 			header('Content-Description: File Transfer');
 			header('Content-Disposition: attachment; filename=' . basename($file_path));
 			header('Cache-Control: max-age=604800, must-revalidate');
@@ -33,7 +40,8 @@ class FileManager {
 			header('Content-Length: ' . filesize($file_path));
 			header('Content-Transfer-Encoding: binary');
 
-			ob_clean();
+			// ob_clean();
+			if (ob_get_contents()) ob_end_clean();
 			flush();
 			readfile($file_path);
 			return TRUE;
@@ -45,6 +53,7 @@ class FileManager {
 	public function upload_user_files(array $files, string $dir_path): bool {
 		if (!file_exists($dir_path)) {
 			mkdir($dir_path, 0777);
+			echo "user_storage_dir created at $dir_path\n";
 		}
 
 		foreach ($files as $file) {
@@ -58,10 +67,11 @@ class FileManager {
 	public function upload_user_file($dir_path, $file): bool {
 		$file_ID = uniqid();
 		$file_info = pathinfo($file['name']);
+		$dir_path = realpath($dir_path);
 		$new_file = array(
-			'owner' => $_SESSION['user_name'],
-			'name' => $file_info['filename'] . '.' . $file_info['extension'],
-			'URL' => $dir_path . '/' . $file_ID . '.' . $file_info['extension'],
+			'owner_ID' => $_SESSION['user_ID'],
+			'name' => "{$file_info['filename']}.{$file_info['extension']}",
+			'URL' => "$dir_path/$file_ID.{$file_info['extension']}",
 			'thumbnail_URL' => NULL,
 			'type' => $this->get_file_type($file_info['extension']),
 			'ID' => $file_ID
@@ -115,22 +125,21 @@ class FileManager {
 	public function create_minimized_image(string $file_path, string $dir_path, string $suffix = "_min"): string {
 		$file_info = pathinfo($file_path);
 		$minimized_file_name = $file_info['filename'] . $suffix . "." . $file_info['extension'];
-		$minimized_file_path = realpath($dir_path) . "/" . $minimized_file_name;
-		$cmd = "/usr/local/bin/ffmpeg -i " . realpath($file_path) . " -vf scale=\"360:-1\" " . $minimized_file_path;
+		$minimized_file_path = $dir_path . "/" . $minimized_file_name;
+		$cmd = "ffmpeg -i " . realpath($file_path) . " -vf scale=\"360:-1\" " . $minimized_file_path;
 
 		shell_exec($cmd);
-		return $dir_path . "/" . $minimized_file_name;
+		return $minimized_file_path;
 	}
 
 	public function create_video_thumbnail(string $file_path, string $dir_path, string $suffix = "_thumb"): string {
 		$file_info = pathinfo($file_path);
 		$thumbnail_name = $file_info['filename'] . $suffix . ".jpg";
-		$thumbnail_path = realpath($dir_path) . "/" . $thumbnail_name;
-		$cmd = "/usr/local/bin/ffmpeg -i " . realpath($file_path) . " -vframes 1 -an -filter:v scale=\"320:-1\" -ss 0 " .
-			$thumbnail_path;
+		$thumbnail_path = $dir_path . "/" . $thumbnail_name;
+		$cmd = "ffmpeg -i " . realpath($file_path) . " -vframes 1 -an -filter:v scale=\"320:-1\" -ss 0 " . $thumbnail_path;
 
 		shell_exec($cmd);
-		return $dir_path . "/" . $thumbnail_name;
+		return $thumbnail_path;
 	}
 
 	private function upload_error_message($code): string {

@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack --mode development",
-    "start": "webpack serve --mode development --hot",
-    "build": "webpack --mode production"
+    "start": "NODE_ENV=development webpack serve --mode development --hot",
+    "build": "NODE_ENV=production webpack --mode production"
   },
   "author": "Egor Pershin <hickar@icloud.com>",
   "repository": "https://github.com/Hickar/medialibrary-coursework.git",
@@ -31,6 +31,7 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "style-loader": "^2.0.0",
+    "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^5.11.1",
     "webpack-cli": "^4.3.1",
     "webpack-dev-server": "^3.11.1"

@@ -12,7 +12,7 @@ import useFetch from "../Hooks/useFetch";
 export default function Gallery() {
   const setNotification = useContext(NotificationContext);
   const fileInput = useRef();
-  const [query, setQuery] = useState(`https://medialib.hickar.space/api?getUserFiles`);
+  const [query, setQuery] = useState(`${process.env.HOST_API_URL}?getUserFiles`);
   const [userData, isLoading, doFetch] = useFetch(query);
 
   const galleryInitialState = {
@@ -102,7 +102,7 @@ export default function Gallery() {
       formData.append("files[]", file, file.name);
     }
 
-    const response = await fetch(`https://medialib.hickar.space/api?uploadFiles`, {
+    const response = await fetch(`${process.env.HOST_API_URL}?uploadFiles`, {
       body: formData,
       method: "POST"
     });

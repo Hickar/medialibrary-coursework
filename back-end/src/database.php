@@ -25,20 +25,20 @@ class Database {
 	}
 
 	public function create_file(array $file) {
-		return $this->db->query("INSERT INTO FILES (owner, name, URL, thumbnail_URL, type, ID)" .
-			"VALUES ('{$file['owner']}', '{$file['name']}', '{$file['URL']}', '{$file['thumbnail_URL']}', '{$file['type']}', '{$file['ID']}')");
+		return $this->db->query("INSERT INTO FILES (owner_ID, name, URL, thumbnail_URL, type, ID)" .
+			"VALUES ('{$file['owner_ID']}', '{$file['name']}', '{$file['URL']}', '{$file['thumbnail_URL']}', '{$file['type']}', '{$file['ID']}')");
 	}
 
 	public function get_file_by_ID(string $ID) {
 		return $this->query("SELECT * FROM FILES WHERE ID='{$ID}'")->fetch_array(MYSQLI_ASSOC);
 	}
 
-	public function get_files_by_owner(string $username): array {
-		return $this->query("SELECT * FROM FILES WHERE owner='{$username}'")->fetch_all(MYSQLI_ASSOC);
+	public function get_files_by_owner_ID(string $ID): array {
+		return $this->query("SELECT * FROM FILES WHERE owner_ID='{$ID}'")->fetch_all(MYSQLI_ASSOC);
 	}
 
 	public function delete_file(string $owner, string $ID) {
-		return $this->query("DELETE FROM FILES WHERE owner='{$owner}' AND ID='{$ID}'");
+		return $this->query("DELETE FROM FILES WHERE owner_ID='{$owner}' AND ID='{$ID}'");
 	}
 
 	public function update_file(string $ID, string $key, string $value) {

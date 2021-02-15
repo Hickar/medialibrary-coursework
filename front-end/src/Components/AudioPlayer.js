@@ -7,7 +7,7 @@ export default function AudioPlayer(props) {
 	const audioRef = useRef();
 	const [isPlaying, setIsPlaying] = useState(props.isActive);
 	const [data, isLoading] = useFetch(
-		`https://medialib.hickar.space/api?getUserFile&file_ID=${props.mediaItemActive.ID}`,
+		`${process.env.HOST_API_URL}?getUserFile&file_ID=${props.mediaItemActive.ID}`,
 		"FILE"
 	);
 

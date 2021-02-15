@@ -2,8 +2,9 @@ const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 
-let config = {
+const config = {
   entry: {
     main: "./src/app.js"
   },
@@ -13,10 +14,11 @@ let config = {
     publicPath: ""
   },
   devServer: {
-    publicPath: "/",
+    publicPath: "",
     contentBase: path.join(__dirname),
     compress: true,
-    writeToDisk: true
+    writeToDisk: true,
+    port: 9000
   },
   resolve: {
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"]
@@ -47,7 +49,9 @@ let config = {
           {
             loader: "file-loader",
             options: {
-              name: "../dist/assets/[hash].[ext]"
+              name: "[hash].[ext]",
+              outputPath: "assets/",
+              publicPath: "/assets/"
             }
           }
         ]
@@ -76,26 +80,25 @@ let config = {
       filename: "index.html",
       template: "src/index.html"
     }),
-    new MiniCssExtractPlugin()]
+    new MiniCssExtractPlugin(),
+    new webpack.DefinePlugin({
+      "process.env": {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+        HOST_API_URL: JSON.stringify(
+          process.env.NODE_ENV === "production" ?
+            "https://medialib.hickar.space/api" :
+            "https://www.localhost/api")
+      }
+    })
+  ],
+  optimization: {
+    minimizer: []
+  }
 };
 
 if (process.env.NODE_ENV === "production") {
-  config.plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: false,
-      compress: {
-        sequences: true,
-        conditionals: true,
-        booleans: true,
-        if_return: true,
-        join_vars: true,
-        drop_console: true
-      },
-      output: {
-        comments: false
-      },
-      minimize: true
-    })
+  config.optimization.minimizer.push(
+    new UglifyJSPlugin()
   );
 }
 

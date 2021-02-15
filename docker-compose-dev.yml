@@ -3,23 +3,24 @@ version: "3.7"
 services:
   www:
     container_name: apache
-    image: front-end:latest
-    build: ./front-end
+#    build: ./front-end/
+    image: httpd:2.4-alpine
     networks:
       - front-end
     ports:
-      - 8080:80
-      - 8443:443
+      - 8081:80
     env_file:
-      - .env
+      - .env.dev
     depends_on:
       - back-api
-    restart: always
+    volumes:
+      - ./front-end/:/usr/local/apache2/front-end/
+      - ./front-end/dist:/usr/local/apache2/htdocs/
 
   back-api:
     container_name: php-api
+    build: ./back-end/
     image: back-end:latest
-    build: ./back-end
     networks:
       - front-end
       - back-end
@@ -30,9 +31,10 @@ services:
     depends_on:
       - db
     env_file:
-      - .env
+      - .env.dev
+    volumes:
+      - ./back-end:/app
     command: php -S 0.0.0.0:8000
-    restart: always
 
   db:
     container_name: mysql
@@ -41,12 +43,11 @@ services:
     networks:
       - back-end
     env_file:
-      - .env
+      - .env.dev
     ports:
       - 3306
     command: --default-authentication-plugin=mysql_native_password
-    restart: always
 
 networks:
-  front-end:
-  back-end:
+ front-end:
+ back-end:

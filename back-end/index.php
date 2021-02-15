@@ -3,15 +3,23 @@ require_once("src/database.php");
 require_once("src/auth.php");
 require_once("src/filemanager.php");
 require_once("src/utils.php");
+require_once("src/config.php");
+
 session_start();
 
-error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
+$mode = getenv("MODE");
+$origin = getenv("HOST_ADDRESS");
 
-header('Access-Control-Allow-Origin: https://medialib.hickar.space');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, PATCH, DELETE');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header("Access-Control-Allow-Origin: https://www.localhost");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, PATCH, DELETE");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-$db = new Database("db", "root", "super_secret_password", "MEDIALIBRARY");
+$db = new Database(
+	"db",
+	getenv("DB_USER"),
+	getenv("DB_PASSWORD"),
+	getenv("DB_NAME"));
 $auth_manager = new Auth($db);
 $file_manager = new FileManager($db);
 $user_data = json_decode(file_get_contents('php://input'), TRUE);
@@ -29,20 +37,23 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['logout'])) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['isAuthed'])) {
-	if ($auth_manager->isAuthorized()) {
-		setcookie('user_name', $_SESSION['user_name'], time() + 8600, '/');
-	}
+	$domain = $mode === "production" ? $origin : "/";
+//	if ($auth_manager->isAuthorized()) {
+//		setcookie('user_name', $_SESSION['user_name'], time() + 8600, '/', $domain);
+//		setcookie('user_name', $_SESSION['user_name'], time() + 8600);
+//	}
 	send_response($auth_manager->isAuthorized());
 }
 
 if (isset($_REQUEST['uploadFiles']) && isset($_FILES['files'])) {
 	$files = $file_manager->normalize_user_files($_FILES['files']);
-	$file_manager->upload_user_files($files, "../storage/" . $_SESSION['user_ID']);
+	$user_storage_path = "storage/" . $_SESSION['user_ID'];
+	$file_manager->upload_user_files($files, $user_storage_path);
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_REQUEST['getUserFiles'])) {
 	if (isset($_SESSION['user_name'])) {
-		$files_info = $file_manager->get_user_files_info($_SESSION['user_name']);
+		$files_info = $file_manager->get_user_files_info($_SESSION['user_ID']);
 
 		header('Pragma: public');
 		header('Cache-Control: max-age=0, must-revalidate');
