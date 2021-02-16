@@ -72,4 +72,3 @@ function configure_vhost() {
 install_docker
 install_certbot
 configure_vhost
-
