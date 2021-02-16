@@ -2,6 +2,7 @@
 
 domain="medialib.hickar.space"
 repo="https://github.com/Hickar/medialibrary-coursework"
+project_dir="~/medialibrary-coursework/"
 
 function is_exists() {
   if command -v $1 &> /dev/null; then
@@ -13,7 +14,8 @@ function is_exists() {
 
 function install_docker() {
   is_exists docker
-  if [ $? = 0 ]; then
+  if [ $? = 0 ];
+  then
     echo "Updating packages list..."
     sudo apt-get update && sudo apt-get upgrade
 
@@ -48,27 +50,26 @@ function install_docker() {
 }
 
 function install_certbot() {
- echo "Installing certbot & dependencies..."
- sudo apt install snapd
- sudo snap install core; sudo snap refresh core
- sudo snap install --classic certbot
- sudo ln -s /snap/bin/certbot /usr/bin/certbot
- sudo certbot --apache
- return 
+  echo "Installing certbot & dependencies..."
+  sudo apt install snapd
+  sudo snap install core; sudo snap refresh core
+  sudo snap install --classic certbot
+  sudo ln -s /snap/bin/certbot /usr/bin/certbot
+  sudo certbot --apache
+  return 
 }
 
 function configure_vhost() {
- echo "Apache configuration..."
- sudo cp -r /etc/letsencrypt/live/$domain.conf/* ~/medialibrary-coursework/
- sudo cp $domain.conf /etc/apache2/sites-available/
+  echo "Apache configuration..."
+  sudo cp -r /etc/letsencrypt/live/$domain.conf/* ./certs/
+  sudo cp $domain.conf /etc/apache2/sites-available/
 
- sudo a2ensite $domain
- sudo a2enmod
- return
+  sudo a2ensite $domain
+  sudo a2enmod rewrite ssl proxy proxy-http log_debug alias
+  return
 }
 
-cd ~/ && git clone $repo
-# install_docker
-# install_certbot
-# configure_vhost
+install_docker
+install_certbot
+configure_vhost
 
