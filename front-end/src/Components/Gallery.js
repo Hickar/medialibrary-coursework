@@ -1,11 +1,11 @@
-import React, {useState, useRef, useEffect, useContext, useReducer} from "react";
+import React, { useState, useRef, useEffect, useContext, useReducer } from "react";
 import styles from "./Gallery.module.css";
 import MediaCard from "./MediaCard";
 import GalleryViewModal from "./GalleryViewModal";
 import AudioPlayer from "./AudioPlayer";
 import LoadingSpinner from "./LoadingSpinner";
-import {NotificationContext} from "../Contexts/NotificationContext";
-import {GalleryContext} from "../Contexts/GalleryContext";
+import { NotificationContext } from "../Contexts/NotificationContext";
+import { GalleryContext } from "../Contexts/GalleryContext";
 import uploadFileIcon from "../assets/uploadFile_Icon.svg";
 import useFetch from "../Hooks/useFetch";
 
@@ -38,10 +38,10 @@ export default function Gallery() {
         return state;
 
       case "enableMediaViewer":
-        return {...state, isViewActive: true, activeItem: action.payload};
+        return { ...state, isViewActive: true, activeItem: action.payload };
 
       case "disableMediaViewer":
-        return {...state, isViewActive: false, activeItem: null};
+        return { ...state, isViewActive: false, activeItem: null };
 
       case "toggleAudioPlayer":
         if (state.isAudioActive && state.activeItem === action.payload) {
@@ -67,7 +67,7 @@ export default function Gallery() {
         return {
           ...state,
           audioCurrentTime:
-          action.payload
+            action.payload
         };
 
       case "setAudioDuration":
@@ -110,10 +110,10 @@ export default function Gallery() {
     const data = await response.json();
 
     if (!data.err) {
-      setNotification({type: "message", text: data.data, active: true});
-      dispatchGalleryAction({type: "reload"});
+      setNotification({ type: "message", text: data.data, active: true });
+      dispatchGalleryAction({ type: "reload" });
     } else {
-      setNotification({type: "error", text: data.data, active: true});
+      setNotification({ type: "error", text: data.data, active: true });
     }
   }
 
@@ -140,13 +140,13 @@ export default function Gallery() {
             mediaItems={userData.data.filter(file =>
               file.type === "image" || file.type === "video"
             )}
-            mediaItemActive={galleryState.activeItem}/>
+            mediaItemActive={galleryState.activeItem} />
           : null
       }
-      <input ref={fileInput} className={styles.hidden} type={"file"} multiple/>
+      <input ref={fileInput} className={styles.hidden} type={"file"} multiple />
       <div className={styles.toolbar}>
         <button className={styles.toolbar_item} onClick={handleClickOnUploadFiles}>
-          <img className={styles.toolbar_item_icon} src={uploadFileIcon} alt={"File upload button"}/>
+          <img className={styles.toolbar_item_icon} src={uploadFileIcon} alt={"File upload button"} />
         </button>
       </div>
       {!isLoading ?
@@ -176,7 +176,7 @@ export default function Gallery() {
           })
           }
         </div> :
-        <LoadingSpinner/>
+        <LoadingSpinner />
       }
 
     </GalleryContext.Provider>

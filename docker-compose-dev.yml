@@ -5,6 +5,7 @@ services:
     container_name: apache
 #    build: ./front-end/
     image: httpd:2.4-alpine
+    platform: linux/x86_64
     networks:
       - front-end
     ports:
@@ -21,6 +22,7 @@ services:
     container_name: php-api
     build: ./back-end/
     image: back-end:latest
+    platform: linux/x86_64
     networks:
       - front-end
       - back-end
@@ -38,7 +40,8 @@ services:
 
   db:
     container_name: mysql
-    image: mysql:8.0
+    image: mysql/mysql-server:8.0.23
+    platform: linux/x86_64
     build: ./db
     networks:
       - back-end
@@ -49,5 +52,5 @@ services:
     command: --default-authentication-plugin=mysql_native_password
 
 networks:
- front-end:
- back-end:
+  front-end:
+  back-end:

@@ -53,7 +53,6 @@ class FileManager {
 	public function upload_user_files(array $files, string $dir_path): bool {
 		if (!file_exists($dir_path)) {
 			mkdir($dir_path, 0777);
-			echo "user_storage_dir created at $dir_path\n";
 		}
 
 		foreach ($files as $file) {
